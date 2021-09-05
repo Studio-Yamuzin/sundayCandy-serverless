@@ -1,9 +1,11 @@
 # NOTE: update this with your service name
-service: sundayCandy-serverless
+service: sundaycandy-serverless
 
-# Create an optimized package for our functions 
+# Create an optimized package for our functions
 package:
-  individually: true
+  excludeDevDependencies: false
+  include:
+    - node_modules/**
 
 plugins:
   - serverless-bundle # Package our functions with Webpack
@@ -12,21 +14,42 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: dev
-  region: us-east-1
-  # To load environment variables externally
-  # rename env.example to .env and uncomment
-  # the following line. Also, make sure to not
-  # commit your .env.
-  #
-  #environment:
-  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
+  region: ap-northeast-2
 
 functions:
-  hello:
-    handler: handler.hello
+  kakaoSignUp:
+    handler: src/auth/kakaoSignUp.main
     events:
       - http:
-          path: hello
-          method: get
+          path: kakaoSignUp
+          method: post
+  preSignUp:
+    handler: src/auth/preSignUp.main
+    events:
+      - http:
+          path: preSignUp
+          method: post
+  preKakaoAuthentication:
+    handler: src/auth/preKakaoAuthentication.main
+    events:
+      - http:
+          path: preKakaoAuthentication
+          method: post
+custom:
+  bundle:
+    linting: false # Enable linting as a part of the build process
+    tsConfig: "tsconfig.json" # Path to your 'tsconfig.json', if it's not in the root
+    aliases: # Create an alias to 'import' modules easily with a custom path
+      - src: src
+    packager: yarn
+#   stage: dev
+#   appSync:
+#     name: ${self:service}-${self:custom.stage}
+#     authenticationType: AMAZON_COGNITO_USER_POOLS
+#     schema: schema.grapqhl
+#   userPoolConfig:
+#     awsRegion: ap-northeast-2
+#     defaultAction: ALLOW
+#     userPoolId: 68heoqrl708fhl8666ku89it90
