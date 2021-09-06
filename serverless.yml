@@ -11,6 +11,7 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-appsync-plugin
 
 provider:
   name: aws
@@ -40,7 +41,68 @@ provider:
       Resource:
         - "arn:aws:cognito-idp:ap-northeast-2:674304001403:userpool/*"
         - "arn:aws:dynamodb:ap-northeast-2:*:*"
-
+custom:
+  bundle:
+    linting: false # Enable linting as a part of the build process
+    tsConfig: "tsconfig.json" # Path to your 'tsconfig.json', if it's not in the root
+    aliases: # Create an alias to 'import' modules easily with a custom path
+      - src: src
+    packager: yarn
+  appSync:
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: ap-northeast-2
+      defaultAction: ALLOW
+      userPoolId: ap-northeast-2_eOsy1c65x
+      existing: true
+    name: sundayCandy-graphql
+    schema:
+      - schemas/Profile.graphql
+      - schemas/Church.graphql
+      - schemas/Bible.graphql
+    mappingTemplatesLocation: resolvers
+    mappingTemplates:
+      - type: Mutation
+        field: createProfile
+        dataSource: sundayCandy
+      - type: Mutation
+        field: updateProfile
+        dataSource: sundayCandy
+      - type: Mutation
+        field: createChurch
+        dataSource: sundayCandy
+      - type: Query
+        field: getBibleByChapter
+        dataSource: sundayCandy
+      - type: Query
+        field: getBibleByPhrase
+        dataSource: sundayCandy
+      - type: Query
+        field: getBibleByVerse
+        dataSource: sundayCandy
+      - type: Query
+        field: getChurch
+        dataSource: sundayCandy
+      - type: Query
+        field: getProfile
+        dataSource: sundayCandy
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: sundayCandy
+        description: sundayCandy Table
+        config:
+          tableName: sundayCandy
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - dynamodb:Scan
+                - dynamodb:Query
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:DescribeTable
+              Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
 functions:
   kakao:
     handler: src/auth/kakaoSignUp.main
@@ -60,41 +122,3 @@ functions:
       - http:
           path: preKakaoAuthentication
           method: post
-custom:
-  bundle:
-    linting: false # Enable linting as a part of the build process
-    tsConfig: "tsconfig.json" # Path to your 'tsconfig.json', if it's not in the root
-    aliases: # Create an alias to 'import' modules easily with a custom path
-      - src: src
-    packager: yarn
-  appSync:
-    authenticationType: AMAZON_COGNITO_USER_POOLS
-    userPoolConfig:
-      awsRegion: ap-northeast-2
-      defaultAction: ALLOW
-      userPoolId: { Ref: FillmeUserPool }
-      existing: true
-    name: sundayCandy-graphql
-    mappingTemplatesLocation: resolvers
-    mappingTemplates:
-      - type: Mutation
-        field: createUser
-        dataSource: fillmeTable
-    schema: schema.graphql
-    dataSources:
-      - type: AMAZON_DYNAMODB
-        name: fillmeTable
-        description: fillme Table
-        config:
-          tableName: fillme
-          iamRoleStatements:
-            - Effect: Allow
-              Action:
-                - dynamodb:Scan
-                - dynamodb:Query
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:UpdateItem
-                - dynamodb:DeleteItem
-                - dynamodb:DescribeTable
-              Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
