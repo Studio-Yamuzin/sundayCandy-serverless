@@ -4,7 +4,8 @@ import axios from 'axios';
 const KAKAO_TOKEN_VERIFICATION_URL = "https://kapi.kakao.com/v2/user/me";
 
 export const main: PreAuthenticationTriggerHandler = async(event, context, callback) => {
-  const token = event?.request?.validationData?.accessToken;
+  console.log(`event info : ${JSON.stringify(event)}`);
+  const token = event?.request?.validationData?.token;
   const result = await axios.get(KAKAO_TOKEN_VERIFICATION_URL, {
     headers: {
       Authorization: `Bearer ${token}`,
