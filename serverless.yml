@@ -17,13 +17,36 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: ap-northeast-2
+  environment:
+    devCognitoUserPoolId: ap-northeast-2_eOsy1c65x
+    tableName: ${env:TABLE_NAME}
+    authTableName: ${env:AUTH_TABLE_NAME}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchWriteItem
+        - cognito-idp:AdminDeleteUser
+        - cognito-idp:AdminUpdateUserAttributes
+        - cognito-idp:AdminGetUser
+        - cognito-idp:ListUsers
+      Resource:
+        - "arn:aws:cognito-idp:ap-northeast-2:674304001403:userpool/*"
+        - "arn:aws:dynamodb:ap-northeast-2:*:*"
 
 functions:
-  kakaoSignUp:
+  kakao:
     handler: src/auth/kakaoSignUp.main
     events:
       - http:
-          path: kakaoSignUp
+          path: kakao/signUp
           method: post
   preSignUp:
     handler: src/auth/preSignUp.main
@@ -44,12 +67,34 @@ custom:
     aliases: # Create an alias to 'import' modules easily with a custom path
       - src: src
     packager: yarn
-#   stage: dev
-#   appSync:
-#     name: ${self:service}-${self:custom.stage}
-#     authenticationType: AMAZON_COGNITO_USER_POOLS
-#     schema: schema.grapqhl
-#   userPoolConfig:
-#     awsRegion: ap-northeast-2
-#     defaultAction: ALLOW
-#     userPoolId: 68heoqrl708fhl8666ku89it90
+  appSync:
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: ap-northeast-2
+      defaultAction: ALLOW
+      userPoolId: { Ref: FillmeUserPool }
+      existing: true
+    name: sundayCandy-graphql
+    mappingTemplatesLocation: resolvers
+    mappingTemplates:
+      - type: Mutation
+        field: createUser
+        dataSource: fillmeTable
+    schema: schema.graphql
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: fillmeTable
+        description: fillme Table
+        config:
+          tableName: fillme
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - dynamodb:Scan
+                - dynamodb:Query
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:DescribeTable
+              Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
