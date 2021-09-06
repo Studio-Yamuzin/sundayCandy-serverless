@@ -1,0 +1,37 @@
+type Bible {
+  bibleId: ID!
+  contentId: ID!
+  phrase: number!
+  verse: number! 
+  chater: string!
+  isLast: boolean
+  text: String!
+}
+
+input getBibleByChapter {
+  chapter: string!
+}
+
+input getBibleByPhraseInput {
+  chapter: string!
+  phrase: number!
+}
+
+input getBibleByVerseInput {
+  chapter: string!
+  phrase: number!
+  verse: number!
+}
+
+input getBibleByVerseListInput {
+  chapter: string!
+  phrase: number!
+  verse: number[]!
+}
+
+type Query {
+  getBibleByChater(): Bible[]
+  getBibleByPhrase(phrase: number!): Bible[]
+  getBibleByVerseList(chapter: string): Bible[]
+  getBibleByVerse(chapter: string): Bible
+}
