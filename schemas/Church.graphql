@@ -1,0 +1,38 @@
+type Church {
+  churchId: ID!
+  name: String!
+  description: String
+  address: String!
+  phoneNumber: String!
+  photo: String
+  type: String
+}
+
+type Query {
+  getChurchByUserId(userID: ID!): Church
+}
+
+input CreateChurchInput {
+  churchId: ID!
+  name: String!
+  description: String
+  address: String!
+  phoneNumber: String!
+  photo: String
+  type: String
+}
+
+input UpdateChurchInput {
+  churchId: ID!
+  name: String!
+  description: String
+  address: String!
+  phoneNumber: String!
+  photo: String
+  type: String
+}
+
+type Mutation {
+  createChurch(input: CreateChurchInput): Church
+  updateChurch(input: UpdateChurchInput): Church
+}
