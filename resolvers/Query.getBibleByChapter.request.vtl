@@ -1,0 +1,10 @@
+{
+    "version" : "2017-02-28",
+    "operation" : "Query",
+    "query" : {
+         "expression": "pk = "bible-NKRV" and (begins_with(sk,:sk)"
+        "expressionValues" : {
+            "sk" : $util.dynamodb.toDynamoDBJson($ctx.args.chapter)
+        }
+    }
+}
