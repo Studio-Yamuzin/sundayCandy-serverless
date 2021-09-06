@@ -1,0 +1,30 @@
+type Profile {
+  userId: ID!
+  name: String
+  phoneNumber: String
+  photo: String
+  position: String
+}
+
+input CreateUserIput {
+  name: String
+  phoneNumber: String
+  photo: String
+  position: String
+}
+
+input UpdateUserInfo {
+  name: String
+  phoneNumber: String
+  photo: String
+  position: String
+}
+
+type Query {
+  getUser(userId: ID!): User
+}
+
+type Mutation {
+  createUser(input: CreateUserIput): User
+  updateUserInfo(input: UpdateUserInfo): User
+}
