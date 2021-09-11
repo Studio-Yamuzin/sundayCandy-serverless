@@ -1,0 +1,5 @@
+  - dataSource: myLambda
+      type: Church
+      field: linked
+      request: "resolvers/church/createChurch-request.vtl"
+      response: "resolvers/commons/lambda-response.vtl"
