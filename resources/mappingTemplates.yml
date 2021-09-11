@@ -1,0 +1,16 @@
+Templates:
+  - dataSource: Lambda
+    type: Mutation
+    field: createChurch
+    request: "church/createChurch-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: createProfile
+    request: "profile/createProfile-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getOnboardingStep
+    request: "onboardingStep/getOnboardingStep-request.vtl"
+    response: "common/lambda-response.vtl"
