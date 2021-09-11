@@ -21,10 +21,10 @@ input UpdateUserInfo {
 }
 
 type Query {
-  getUser(userId: ID!): User
+  getProfile(userId: ID!): Profile
 }
 
 type Mutation {
-  createUser(input: CreateUserIput): User
-  updateUserInfo(input: UpdateUserInfo): User
+  createProfile(input: CreateUserIput): Profile
+  updateProfile(input: UpdateUserInfo): Profile
 }

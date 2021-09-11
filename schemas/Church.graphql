@@ -1,5 +1,4 @@
 type Church {
-  churchId: ID!
   name: String!
   description: String
   address: String!
@@ -9,11 +8,10 @@ type Church {
 }
 
 type Query {
-  getChurchByUserId(userID: ID!): Church
+  getChurch(chuchId: ID!): Church
 }
 
 input CreateChurchInput {
-  churchId: ID!
   name: String!
   description: String
   address: String!
@@ -23,7 +21,6 @@ input CreateChurchInput {
 }
 
 input UpdateChurchInput {
-  churchId: ID!
   name: String!
   description: String
   address: String!

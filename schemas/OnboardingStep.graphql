@@ -1,0 +1,12 @@
+enum OnboardingStepType {
+  onboarding
+  end
+}
+
+type OnboardingStep {
+  step: OnboardingStepType;
+}
+
+type Query {
+  getOnboardingStep(): OnboardingStep
+}
