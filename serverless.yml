@@ -38,10 +38,15 @@ provider:
         - cognito-idp:AdminUpdateUserAttributes
         - cognito-idp:AdminGetUser
         - cognito-idp:ListUsers
+        - lambda:InvokeFunction
       Resource:
         - "arn:aws:cognito-idp:ap-northeast-2:674304001403:userpool/*"
         - "arn:aws:dynamodb:ap-northeast-2:*:*"
+        - "arn:aws:lambda:ap-northeast-2:674304001403:function:*"
 custom:
+  stage: dev
+  accountId: 674304001403
+  sundayCandyTableArn: "arn:aws:dynamodb:ap-northeast-2:${self:custom.accountId}:table/sundayCandy"
   bundle:
     linting: false # Enable linting as a part of the build process
     tsConfig: "tsconfig.json" # Path to your 'tsconfig.json', if it's not in the root
@@ -49,7 +54,8 @@ custom:
       - src: src
     packager: yarn
   appSync:
-    authenticationType: AMAZON_COGNITO_USER_POOLS
+    serviceRole: "${self:custom.stage}-sundayCandy-AppSyncServiceRole"
+    authenticationType: AWS_IAM
     userPoolConfig:
       awsRegion: ap-northeast-2
       defaultAction: ALLOW
@@ -57,52 +63,37 @@ custom:
       existing: true
     name: sundayCandy-graphql
     schema:
-      - schemas/Profile.graphql
+      - schemas/User.graphql
       - schemas/Church.graphql
       - schemas/Bible.graphql
-    mappingTemplatesLocation: resolvers
-    mappingTemplates:
-      - type: Mutation
-        field: createProfile
-        dataSource: sundayCandy
-      - type: Mutation
-        field: updateProfile
-        dataSource: sundayCandy
-      - type: Mutation
-        field: createChurch
-        dataSource: sundayCandy
-      - type: Query
-        field: getBibleByChapter
-        dataSource: sundayCandy
-      - type: Query
-        field: getBibleByPhrase
-        dataSource: sundayCandy
-      - type: Query
-        field: getBibleByVerse
-        dataSource: sundayCandy
-      - type: Query
-        field: getChurch
-        dataSource: sundayCandy
-      - type: Query
-        field: getProfile
-        dataSource: sundayCandy
+    mappingTemplates: ${file(resources/mappingTemplates.yml):Templates}
     dataSources:
       - type: AMAZON_DYNAMODB
         name: sundayCandy
-        description: sundayCandy Table
+        description: "sundayCandy Table"
         config:
           tableName: sundayCandy
-          iamRoleStatements:
-            - Effect: Allow
+          iamRoleStatements: # custom IAM Role statements for this DataSource. Ignored if `serviceRoleArn` is present. Auto-generated if both `serviceRoleArn` and `iamRoleStatements` are omitted
+            - Effect: "Allow"
               Action:
-                - dynamodb:Scan
-                - dynamodb:Query
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:UpdateItem
-                - dynamodb:DeleteItem
-                - dynamodb:DescribeTable
-              Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
+                - "dynamodb:GetItem"
+              Resource:
+                - "${self:custom.sundayCandyTableArn}"
+                - "${self:custom.sundayCandyTableArn}/*"
+      - type: AWS_LAMBDA
+        name: Lambda
+        description: "sundayCandy lambda function dataSource"
+        config:
+          functionName: graphql
+          lambdaFunctionArn: "arn:aws:lambda:ap-northeast-2:${self:custom.accountId}:function:sundaycandy-serverless-${self:custom.stage}-graphql"
+          iamRoleStatements: # custom IAM Role statements for this DataSource. Ignored if `serviceRoleArn` is present. Auto-generated if both `serviceRoleArn` and `iamRoleStatements` are omitted
+            - Effect: "Allow"
+              Action:
+                - "lambda:invokeFunction"
+                - "appsync:*"
+              Resource:
+                - "arn:aws:lambda:ap-northeast-2:${self:custom.accountId}:function:sundaycandy-serverless-${self:custom.stage}-graphql"
+                - "arn:aws:lambda:ap-northeast-2:${self:custom.accountId}:function:sundaycandy-serverless-${self:custom.stage}-graphql:*"
 functions:
   kakao:
     handler: src/auth/kakaoSignUp.main
@@ -122,3 +113,8 @@ functions:
       - http:
           path: preKakaoAuthentication
           method: post
+  graphql:
+    handler: handlers/graphqlHandler.main
+    timeout: 900
+    stage:
+      - ${self:custom.stage}

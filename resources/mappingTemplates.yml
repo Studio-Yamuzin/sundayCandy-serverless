@@ -14,3 +14,23 @@ Templates:
     field: getOnboardingStep
     request: "onboardingStep/getOnboardingStep-request.vtl"
     response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getChurch
+    request: "church/getChurch-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getUserChurch
+    request: "church/getUserChurch-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getUserChurch
+    request: "church/getUserChurch-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getProfile
+    request: "profile/getProfile-request.vtl"
+    response: "common/lambda-response.vtl"

@@ -1,0 +1,55 @@
+Resources:
+  AppSyncDynamoDBServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Dynamo-${self:custom.stage}-sundayCandy-AppSyncServiceRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "appsync.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "AppSyncDynamoDB-${self:custom.stage}-sundayCandy-ServiceRolePolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - ${self:custom.sundayCandyTableArn}
+                  - ${self:custom.sundayCandyTableArn}/*
+  AppSyncLambdaServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Lambda-${self:custom.stage}-sundayCandy-AppSyncServiceRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "appsync.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "Lambda-AppSync-${self:custom.stage}-sundayCandy-ServiceRole-Policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "lambda:invokeFunction"
+                Resource:
+                  - "arn:aws:lambda:ap-northeast-2:${self:custom.accountId}:function:sundayCandy-serverless-${self:custom.stage}-graphql"
+                  - "arn:aws:lambda:ap-northeast-2:${self:custom.accountId}:function:sundayCandy-serverless-${self:custom.stage}-graphql:*"
