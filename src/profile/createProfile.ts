@@ -7,15 +7,17 @@ interface IMutationArguments {
   phoneNumber: string;
   photo: string;
   position: string;
+  birthDay: string;
 }
 
-export const createProfile = async(userId, {name, phoneNumber, photo, position}: IMutationArguments) => {
+export const createProfile = async(userId, {name, phoneNumber, photo, position, birthDay}: IMutationArguments) => {
   await dynamodb.putItem({
     PK: userId,
     SK: `profile`,
     name,
+    photo,
     position,
     phoneNumber,
-    photo,
+    birthDay,
   });
 }
