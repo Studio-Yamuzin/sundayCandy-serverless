@@ -1,14 +1,20 @@
 type Profile {
-  userId: ID!
   name: String
   phoneNumber: String
   photo: String
+  birthDay: String
   position: String
+}
+
+# 사용자의 교회
+type UserChurch {
+  name: String
 }
 
 input CreateUserIput {
   name: String
   phoneNumber: String
+  birthDay: String
   photo: String
   position: String
 }
@@ -20,8 +26,19 @@ input UpdateUserInfo {
   position: String
 }
 
+enum OnboardingStepType {
+  onboarding
+  end
+}
+
+type OnboardingStep {
+  step: OnboardingStepType
+}
+
 type Query {
-  getProfile(userId: ID!): Profile
+  getProfile: Profile
+  getUserChurch: UserChurch
+  getOnboardingStep: OnboardingStep
 }
 
 type Mutation {
