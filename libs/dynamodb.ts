@@ -1,5 +1,14 @@
 import {DynamoDB} from "aws-sdk";
 
+type QueryParamsType = {
+  TableName: string;
+  Item?: any;
+  KeyConditionExpression?: string;
+  ExpressionAttributeValues?: Object;
+  ScanIndexForward?: boolean;
+  ExclusiveStartKey?: string;
+}
+
 const client = new DynamoDB.DocumentClient();
 
 const call = (action, params) => {
@@ -17,7 +26,7 @@ const call = (action, params) => {
 
 const queryByKeys = async(PK: string, SK: string) => {
   const result = [];
-  const params = {
+  const params: QueryParamsType = {
     TableName: process.env.tableName,
     KeyConditionExpression: "PK = :PK and SK = :SK",
     ExpressionAttributeValues: {
@@ -25,7 +34,6 @@ const queryByKeys = async(PK: string, SK: string) => {
       ":SK": SK,
     },
     ScanIndexForward: false,
-    ExclusiveStartKey: "",
   };
   let items;
   do {
@@ -38,14 +46,13 @@ const queryByKeys = async(PK: string, SK: string) => {
 
 const queryByPK = async(PK: string) => {
   const result = [];
-  const params = {
+  const params: QueryParamsType = {
     TableName: process.env.tableName,
     KeyConditionExpression: "PK = :PK",
     ExpressionAttributeValues: {
       ":PK": PK,
     },
     ScanIndexForward: false,
-    ExclusiveStartKey: "",
   };
   let items;
   do {
@@ -58,14 +65,13 @@ const queryByPK = async(PK: string) => {
 
 const queryBySK = async (SK: string) => {
   const result = [];
-  const params = {
+  let params: QueryParamsType = {
     TableName: process.env.tableName,
     KeyConditionExpression: "SK = :SK",
     ExpressionAttributeValues: {
       ":SK": SK,
     },
     ScanIndexForward: false,
-    ExclusiveStartKey: "",
   };
   let items;
   do {
@@ -79,7 +85,7 @@ const queryBySK = async (SK: string) => {
 
 const queryByBeginsWith = async(PK: string, word: string) => {
   const result = [];
-  const params = {
+  const params: QueryParamsType = {
     TableName: process.env.tableName,
     KeyConditionExpression: "PK = :PK and begins_with(SK, :WORD)",
     ExpressionAttributeValues: {
@@ -87,7 +93,6 @@ const queryByBeginsWith = async(PK: string, word: string) => {
       ":WORD": word,
     },
     ScanIndexForward: false,
-    ExclusiveStartKey: "",
   };
   let items;
   do {
@@ -100,7 +105,7 @@ const queryByBeginsWith = async(PK: string, word: string) => {
 
 const putItem = async (item) => {
   try {
-    const params = {
+    const params: QueryParamsType = {
       TableName: process.env.tableName,
       Item: item,
     };
