@@ -1,37 +1,60 @@
 type Bible {
-  bibleId: ID!
-  contentId: ID!
-  phrase: Int!
+  PK: ID!
+  SK: ID!
+  title: String!
+  chapter: Int!
   verse: Int! 
-  chater: String!
   isLast: Boolean
   text: String!
 }
 
-input getBibleByChapterInput {
-  chapter: String!
+type Bookmark {
+  title: String!
+  chapter: Int!
+  date: String!
 }
 
-input getBibleByPhraseInput {
-  chapter: String!
-  phrase: Int!
+input getBibleByChapterInput {
+  title: String!
+  chapter: Int!
 }
 
 input getBibleByVerseInput {
-  chapter: String!
-  phrase: Int!
+  title: String!
+  chapter: Int!
   verse: Int!
 }
 
 input getBibleByVerseListInput {
-  chapter: String!
-  phrase: Int!
+  title: String!
+  chapter: Int!
   verse: [Int]!
 }
 
+input createBookmarkInput {
+  title: String!
+  chapter: Int!
+}
+
+input deleteBookmarkInput {
+  title: String!
+  chapter: Int!
+}
+
+input getMyBookmarkByChapterInput {
+  title: String!
+  chapter: String!
+}
+
 type Query {
-  getBibleByChapter(input: getBibleByChapterInput): [Bible]
-  getBibleByPhrase(input: getBibleByPhraseInput!): [Bible]
-  getBibleByVerseList(input: getBibleByVerseInput): [Bible]
-  getBibleByVerse(input: getBibleByVerseInput): Bible
+  getBibleByChapter(input: getBibleByChapterInput!): [Bible]
+  getBibleByVerse(input: getBibleByVerseInput!): Bible
+  getBibleByVerseList(input: getBibleByVerseInput!): [Bible]
+  getMyBookmarks: [Bookmark]
+  getMyBookmarkByChapter(input: getMyBookmarkByChapterInput): Bookmark
+}
+
+type Mutation {
+  createBookmark(input: createBookmarkInput): Bookmark
+  deleteBookmark(input: deleteBookmarkInput): [Bookmark]
 }
