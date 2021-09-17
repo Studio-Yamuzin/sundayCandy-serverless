@@ -4,7 +4,11 @@
   "description": "A Node.js starter for Serverless Framework with ES6 and TypeScript support",
   "main": "handler.js",
   "scripts": {
-    "test": "serverless-bundle test"
+    "test": "serverless-bundle test",
+    "generate": "graphql-codegen",
+    "schema-generate": "ts-node mergeSchemas.ts && yarn generate",
+    "deploy": "ts-node mergeSchemas.ts && sls deploy",
+    "mapping-bible": "cd src/modules && ts-node mappingBible"
   },
   "author": "",
   "license": "MIT",
@@ -13,6 +17,8 @@
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.2.0",
+    "@graphql-codegen/typescript": "^2.2.2",
     "@types/aws-lambda": "^8.10.83",
     "serverless-bundle": "4.3.1",
     "serverless-dotenv-plugin": "^2.1.1",
@@ -21,8 +27,16 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
+    "@graphql-tools/graphql-file-loader": "^7.1.0",
+    "@graphql-tools/load": "^7.3.0",
+    "@graphql-tools/load-files": "^6.4.0",
+    "@graphql-tools/merge": "^8.1.2",
+    "@graphql-tools/schema": "^8.2.0",
+    "apollo-server-lambda": "^3.3.0",
     "aws-sdk": "^2.980.0",
     "axios": "^0.21.1",
+    "graphql": "^15.5.3",
+    "graphql-tools": "^8.2.0",
     "serverless-appsync-plugin": "^1.12.0",
     "serverless-webpack": "^5.5.3",
     "uuid": "7.0.3"
