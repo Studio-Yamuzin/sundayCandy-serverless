@@ -26,11 +26,36 @@ Templates:
     response: "common/lambda-response.vtl"
   - dataSource: Lambda
     type: Query
-    field: getUserChurch
-    request: "church/getUserChurch-request.vtl"
+    field: getProfile
+    request: "profile/getProfile-request.vtl"
     response: "common/lambda-response.vtl"
   - dataSource: Lambda
     type: Query
-    field: getProfile
-    request: "profile/getProfile-request.vtl"
+    field: getBibleByChapter
+    request: "bible/getBibleByChapter-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getBibleByVerse
+    request: "bible/getBibleByVerse-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getMyBookmarkByChapter
+    request: "bible/getMyBookmarkByChapter-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getMyBookmarks
+    request: "bible/getMyBookmarks-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: createBookmark
+    request: "bible/createBookmark-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: deleteBookmark
+    request: "bible/deleteBookmark-request.vtl"
     response: "common/lambda-response.vtl"
