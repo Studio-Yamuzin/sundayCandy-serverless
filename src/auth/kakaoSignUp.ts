@@ -1,7 +1,7 @@
-import dynamodb from '@src/modules/dynamodb';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import {CognitoIdentityServiceProvider} from 'aws-sdk';
 import axios from 'axios';
+import { dynamodb } from 'libs/dynamodb';
 
 const cognitoServiceProvider = new CognitoIdentityServiceProvider({
   apiVersion: '2016-04-18',
@@ -17,8 +17,8 @@ export const main: APIGatewayProxyHandler = async (event, context) => {
   });
 
   const GroupName = 'kakao';
-  const UserPoolId = `ap-northeast-2_eOsy1c65x`;  // aws-exports.js의 "aws_user_pools_id"
-  const ClientId = `204t8opj0rek1k4qb5ca66d6cn`; // aws-exports.js "aws_user_pools_web_client_id"
+  const UserPoolId = `ap-northeast-2_eOsy1c65x`;
+  const ClientId = `204t8opj0rek1k4qb5ca66d6cn`;
   const Username = 'kakao_' + result.data.id;
   const newUserParam = {
     ClientId,
