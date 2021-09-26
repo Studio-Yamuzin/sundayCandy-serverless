@@ -59,3 +59,13 @@ Templates:
     field: deleteBookmark
     request: "bible/deleteBookmark-request.vtl"
     response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: createContemplation
+    request: "contemplation/createContemplation-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getContemplationAll
+    request: "contemplation/getContemplationAll-request.vtl"
+    response: "common/lambda-response.vtl"
