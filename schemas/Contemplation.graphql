@@ -1,0 +1,20 @@
+type Contemplation {
+  references: [String]
+  content: String!
+  range: String
+  date: String!
+}
+
+input CreateContemplationInput {
+  references: [String]
+  content: String!
+  range: String!
+}
+
+type Query {
+  getContemplationAll: [Contemplation]
+}
+
+type Mutation {
+  createContemplation(input: CreateContemplationInput): Contemplation
+}

@@ -24,9 +24,9 @@ export type Bible = {
 
 export type Bookmark = {
   __typename?: 'Bookmark';
-  chapter: Scalars['Int'];
-  date: Scalars['String'];
-  title: Scalars['String'];
+  chapter?: Maybe<Scalars['Int']>;
+  date?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type Church = {
@@ -39,6 +39,19 @@ export type Church = {
   type?: Maybe<Scalars['String']>;
 };
 
+export type Contemplation = {
+  __typename?: 'Contemplation';
+  content: Scalars['String'];
+  date: Scalars['String'];
+  range?: Maybe<Scalars['String']>;
+  references?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type CreateBookmarkInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+};
+
 export type CreateChurchInput = {
   address: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -46,6 +59,12 @@ export type CreateChurchInput = {
   phoneNumber: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+};
+
+export type CreateContemplationInput = {
+  content: Scalars['String'];
+  range: Scalars['String'];
+  references?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type CreateUserIput = {
@@ -56,12 +75,40 @@ export type CreateUserIput = {
   position?: Maybe<Scalars['String']>;
 };
 
+export type DeleteBookmarkInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+};
+
+export type GetBibleByChapterInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+};
+
+export type GetBibleByVerseInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+  verse: Scalars['Int'];
+};
+
+export type GetBibleByVerseListInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+  verse: Array<Maybe<Scalars['Int']>>;
+};
+
+export type GetMyBookmarkByChapterInput = {
+  chapter: Scalars['Int'];
+  title: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBookmark?: Maybe<Bookmark>;
   createChurch?: Maybe<Church>;
+  createContemplation?: Maybe<Contemplation>;
   createProfile?: Maybe<Profile>;
-  deleteBookmark?: Maybe<Array<Maybe<Bookmark>>>;
+  deleteBookmark?: Maybe<Bookmark>;
   updateChurch?: Maybe<Church>;
   updateProfile?: Maybe<Profile>;
 };
@@ -74,6 +121,11 @@ export type MutationCreateBookmarkArgs = {
 
 export type MutationCreateChurchArgs = {
   input?: Maybe<CreateChurchInput>;
+};
+
+
+export type MutationCreateContemplationArgs = {
+  input?: Maybe<CreateContemplationInput>;
 };
 
 
@@ -121,6 +173,7 @@ export type Query = {
   getBibleByVerse?: Maybe<Bible>;
   getBibleByVerseList?: Maybe<Array<Maybe<Bible>>>;
   getChurch?: Maybe<Church>;
+  getContemplationAll?: Maybe<Array<Maybe<Contemplation>>>;
   getMyBookmarkByChapter?: Maybe<Bookmark>;
   getMyBookmarks?: Maybe<Array<Maybe<Bookmark>>>;
   getOnboardingStep?: Maybe<OnboardingStep>;
@@ -153,6 +206,10 @@ export type QueryGetMyBookmarkByChapterArgs = {
   input?: Maybe<GetMyBookmarkByChapterInput>;
 };
 
+export enum Range {
+  Public = 'public'
+}
+
 export type UpdateChurchInput = {
   address: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -172,36 +229,4 @@ export type UpdateUserInfo = {
 export type UserChurch = {
   __typename?: 'UserChurch';
   name?: Maybe<Scalars['String']>;
-};
-
-export type CreateBookmarkInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
-};
-
-export type DeleteBookmarkInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
-};
-
-export type GetBibleByChapterInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
-};
-
-export type GetBibleByVerseInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
-  verse: Scalars['Int'];
-};
-
-export type GetBibleByVerseListInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
-  verse: Array<Maybe<Scalars['Int']>>;
-};
-
-export type GetMyBookmarkByChapterInput = {
-  chapter: Scalars['String'];
-  title: Scalars['String'];
 };
