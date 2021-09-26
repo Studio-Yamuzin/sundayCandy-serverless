@@ -67,6 +67,7 @@ custom:
       - schemas/User.graphql
       - schemas/Church.graphql
       - schemas/Bible.graphql
+      - schemas/Contemplation.graphql
     mappingTemplates: ${file(resources/mappingTemplates.yml):Templates}
     dataSources:
       - type: AMAZON_DYNAMODB
