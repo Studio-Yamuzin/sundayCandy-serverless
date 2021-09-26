@@ -1,4 +1,3 @@
-import { logger } from "@src/modules/logger";
 import { dynamodb } from "libs/dynamodb"
 
 interface IMutationArguments {
