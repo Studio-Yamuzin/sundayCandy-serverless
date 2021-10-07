@@ -41,8 +41,9 @@ export type Church = {
 
 export type Contemplation = {
   __typename?: 'Contemplation';
-  content: Scalars['String'];
+  content?: Maybe<Scalars['String']>;
   date: Scalars['String'];
+  profile?: Maybe<Profile>;
   range?: Maybe<Scalars['String']>;
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
@@ -102,6 +103,19 @@ export type GetMyBookmarkByChapterInput = {
   title: Scalars['String'];
 };
 
+export type MakeRoomInput = {
+  name?: Maybe<Scalars['String']>;
+  users?: Maybe<Array<Maybe<Profile>>>;
+};
+
+export type Message = {
+  __typename?: 'Message';
+  message: Scalars['String'];
+  photo?: Maybe<Scalars['String']>;
+  timeStamp?: Maybe<Scalars['String']>;
+  writer?: Maybe<Profile>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBookmark?: Maybe<Bookmark>;
@@ -109,6 +123,8 @@ export type Mutation = {
   createContemplation?: Maybe<Contemplation>;
   createProfile?: Maybe<Profile>;
   deleteBookmark?: Maybe<Bookmark>;
+  makeRoom?: Maybe<Room>;
+  sendMessage?: Maybe<Message>;
   updateChurch?: Maybe<Church>;
   updateProfile?: Maybe<Profile>;
 };
@@ -139,6 +155,17 @@ export type MutationDeleteBookmarkArgs = {
 };
 
 
+export type MutationMakeRoomArgs = {
+  input?: Maybe<MakeRoomInput>;
+};
+
+
+export type MutationSendMessageArgs = {
+  message: Scalars['String'];
+  roomId: Scalars['String'];
+};
+
+
 export type MutationUpdateChurchArgs = {
   input?: Maybe<UpdateChurchInput>;
 };
@@ -160,6 +187,7 @@ export enum OnboardingStepType {
 
 export type Profile = {
   __typename?: 'Profile';
+  PK?: Maybe<Scalars['String']>;
   birthDay?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
@@ -176,8 +204,10 @@ export type Query = {
   getContemplationAll?: Maybe<Array<Maybe<Contemplation>>>;
   getMyBookmarkByChapter?: Maybe<Bookmark>;
   getMyBookmarks?: Maybe<Array<Maybe<Bookmark>>>;
+  getMyRooms?: Maybe<Array<Maybe<Room>>>;
   getOnboardingStep?: Maybe<OnboardingStep>;
   getProfile?: Maybe<Profile>;
+  getRoomInformation?: Maybe<Room>;
   getUserChurch?: Maybe<UserChurch>;
 };
 
@@ -206,9 +236,29 @@ export type QueryGetMyBookmarkByChapterArgs = {
   input?: Maybe<GetMyBookmarkByChapterInput>;
 };
 
-export enum Range {
-  Public = 'public'
-}
+export type Room = {
+  __typename?: 'Room';
+  messages?: Maybe<Array<Maybe<Message>>>;
+  name?: Maybe<Scalars['String']>;
+  roomId: Scalars['String'];
+  roomMemberships?: Maybe<Array<Maybe<RoomMembership>>>;
+};
+
+export type RoomMembership = {
+  __typename?: 'RoomMembership';
+  members?: Maybe<Array<Maybe<Profile>>>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  sentMessage?: Maybe<Message>;
+};
+
+
+export type SubscriptionSentMessageArgs = {
+  message: Scalars['String'];
+  roomId: Scalars['String'];
+};
 
 export type UpdateChurchInput = {
   address: Scalars['String'];

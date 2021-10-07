@@ -1,0 +1,36 @@
+type Room {
+  roomId: String!
+  name: String
+  messages: [Message]
+  roomMemberships: [RoomMembership]
+}
+
+type RoomMembership {
+  members: [Profile]
+}
+
+type Message {
+  message: String!
+  photo: String
+  timeStamp: String
+  writer: Profile
+}
+
+type Query {
+  getMyRooms: [Room]
+  getRoomInformation: Room
+}
+
+input MakeRoomInput {
+  users: [Profile]
+  name: String
+}
+
+type Mutation {
+  makeRoom(input: MakeRoomInput): Room
+  sendMessage(message: String! roomId: String!): Message
+}
+
+type Subscription {
+  sentMessage(message: String! roomId: String!): Message
+}

@@ -52,6 +52,8 @@ type Query {
   getBibleByVerseList(input: GetBibleByVerseInput!): [Bible]
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
+  getMyRooms: [Room]
+  getRoomInformation: Room
   getChurch(chuchId: ID!): Church
   getContemplationAll: [Contemplation]
   getProfile: Profile
@@ -62,11 +64,40 @@ type Query {
 type Mutation {
   createBookmark(input: CreateBookmarkInput): Bookmark
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
+  makeRoom(input: MakeRoomInput): Room
+  sendMessage(message: String!, roomId: String!): Message
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
+}
+
+type Room {
+  roomId: String!
+  name: String
+  messages: [Message]
+  roomMemberships: [RoomMembership]
+}
+
+type RoomMembership {
+  members: [Profile]
+}
+
+type Message {
+  message: String!
+  photo: String
+  timeStamp: String
+  writer: Profile
+}
+
+input MakeRoomInput {
+  users: [Profile]
+  name: String
+}
+
+type Subscription {
+  sentMessage(message: String!, roomId: String!): Message
 }
 
 type Church {
@@ -98,13 +129,10 @@ input UpdateChurchInput {
 
 type Contemplation {
   references: [String]
-  content: String!
+  content: String
   range: String
   date: String!
-}
-
-enum Range {
-  public
+  profile: Profile
 }
 
 input CreateContemplationInput {
@@ -114,6 +142,7 @@ input CreateContemplationInput {
 }
 
 type Profile {
+  PK: String
   name: String
   phoneNumber: String
   photo: String
@@ -152,4 +181,5 @@ type OnboardingStep {
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }

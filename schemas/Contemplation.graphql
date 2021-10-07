@@ -1,8 +1,9 @@
 type Contemplation {
   references: [String]
-  content: String!
+  content: String
   range: String
   date: String!
+  profile: Profile
 }
 
 input CreateContemplationInput {
