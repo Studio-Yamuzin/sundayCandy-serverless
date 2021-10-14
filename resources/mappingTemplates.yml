@@ -71,8 +71,8 @@ Templates:
     response: "common/lambda-response.vtl"
   - dataSource: Lambda
     type: Mutation
-    field: makeGeneralRoom
-    request: "chat/makeGeneralRoom-request.vtl"
+    field: createGeneralRoom
+    request: "chat/createGeneralRoom-request.vtl"
     response: "common/lambda-response.vtl"
   - dataSource: Lambda
     type: Mutation
@@ -88,4 +88,9 @@ Templates:
     type: Query
     field: getMyChatRooms
     request: "chat/getMyChatRooms-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getRoomMessages
+    request: "chat/getRoomMessages-request.vtl"
     response: "common/lambda-response.vtl"
