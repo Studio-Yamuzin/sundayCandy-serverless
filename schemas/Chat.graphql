@@ -1,9 +1,5 @@
-type Room {
-  roomType: String!
-}
-
-type Connection {
-  userId: String!
+type RoomInfo {
+  users: [String]!
   roomName: String
   roomType: String!
   recentMessage: String
@@ -14,15 +10,10 @@ type Message {
   photo: String
   timeStamp: String
   writer: String # user PK
+  type: String!
 }
 
-type Query {
-  getMyChatRooms: [Connection]
-  getRoomInformation: Room
-  getRecentMessage(input: GetRecentMessageInput): Message
-}
-
-input MakeRoomInput {
+input CreateRoomInput {
   users: [String] # user PKs
   name: String
 }
@@ -37,8 +28,18 @@ input GetRecentMessageInput {
   roomId: String!
 }
 
+input GetRoomMessagesInput {
+  roomId: String!
+}
+
+type Query {
+  getMyChatRooms: [RoomInfo]
+  getRoomMessages(input: GetRoomMessagesInput): [Message]
+  getRecentMessage(input: GetRecentMessageInput): Message
+}
+
 type Mutation {
-  makeGeneralRoom(input: SendMessageInput): Connection
+  createGeneralRoom(input: CreateRoomInput): RoomInfo
   sendMessage(input: SendMessageInput): Message
 }
 

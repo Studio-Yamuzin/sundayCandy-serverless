@@ -19,6 +19,7 @@ input CreateUserIput {
   birthDay: String
   photo: String
   position: String
+  church: String
 }
 
 input UpdateUserInfo {
