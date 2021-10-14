@@ -69,3 +69,23 @@ Templates:
     field: getContemplationAll
     request: "contemplation/getContemplationAll-request.vtl"
     response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: makeGeneralRoom
+    request: "chat/makeGeneralRoom-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: sendMessage
+    request: "chat/sendMessage-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getChurchUsers
+    request: "profile/getChurchUsers-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getMyChatRooms
+    request: "chat/getMyChatRooms-request.vtl"
+    response: "common/lambda-response.vtl"

@@ -6,14 +6,18 @@ import { getUserChurch } from '@src/church/getUserChurch';
 import { getOnboardingStep } from '@src/onboarding/getOnboardingStep';
 import { getChurch } from '@src/church/getChurch';
 import { getProfile } from '@src/profile/getProfile';
-import { getBibleByChapter } from '@src/Bible/getBibleByChapter';
-import { getBibleByVerse } from '@src/Bible/getBibleByVerse';
-import { createBookmark } from '@src/Bible/createBookmark';
-import { deleteBookmark } from '@src/Bible/deleteBookmark';
-import { getMyBookmarks } from '@src/Bible/getMyBookmarks';
-import { getMyBookmarkByChapter } from '@src/Bible/getMyBookmarkByChapter';
+import { getBibleByChapter } from '@src/bible/getBibleByChapter';
+import { getBibleByVerse } from '@src/bible/getBibleByVerse';
+import { createBookmark } from '@src/bible/createBookmark';
+import { deleteBookmark } from '@src/bible/deleteBookmark';
+import { getMyBookmarks } from '@src/bible/getMyBookmarks';
+import { getMyBookmarkByChapter } from '@src/bible/getMyBookmarkByChapter';
 import { createContemplation } from '@src/contemplation/createContemplation';
 import { getContemplationAll } from '@src/contemplation/getContemplationAll';
+import { makeGeneralRoom } from '@src/chat/makeGeneralRoom';
+import { sendMessage } from '@src/chat/sendMessage';
+import { getChurchUsers } from '@src/profile/getChurchUsers';
+import { getMyChatRooms } from '@src/chat/getMyChatRooms';
 
 export const main: Handler = async(event, context) => {
   console.log(JSON.stringify(context));
@@ -49,6 +53,14 @@ export const main: Handler = async(event, context) => {
         return await createContemplation(event.userId, event.arguments.input);
       case "getContemplationAll":
         return await getContemplationAll(event.userId);
+      case "makeGeneralRoom":
+        return await makeGeneralRoom(event.userId, event.arguments.input);
+      case "sendMessage":
+        return await sendMessage(event.userId, event.arguments.input);
+      case "getChurchUsers":
+        return await getChurchUsers(event.userId);
+      case "getMyChatRooms":
+        return await getMyChatRooms(event.userId);
       default:
         throw new Error("Wrong Field.");
     }

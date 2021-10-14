@@ -52,11 +52,13 @@ type Query {
   getBibleByVerseList(input: GetBibleByVerseInput!): [Bible]
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
-  getMyRooms: [Room]
+  getMyChatRooms: [Connection]
   getRoomInformation: Room
+  getRecentMessage(input: GetRecentMessageInput): Message
   getChurch(chuchId: ID!): Church
   getContemplationAll: [Contemplation]
   getProfile: Profile
+  getChurchUsers: [Profile]
   getUserChurch: UserChurch
   getOnboardingStep: OnboardingStep
 }
@@ -64,8 +66,8 @@ type Query {
 type Mutation {
   createBookmark(input: CreateBookmarkInput): Bookmark
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
-  makeRoom(input: MakeRoomInput): Room
-  sendMessage(message: String!, roomId: String!): Message
+  makeGeneralRoom(input: SendMessageInput): Connection
+  sendMessage(input: SendMessageInput): Message
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
@@ -74,30 +76,40 @@ type Mutation {
 }
 
 type Room {
-  roomId: String!
-  name: String
-  messages: [Message]
-  roomMemberships: [RoomMembership]
+  roomType: String!
 }
 
-type RoomMembership {
-  members: [Profile]
+type Connection {
+  userId: String
+  roomName: String
+  roomType: String!
+  recentMessage: String
 }
 
 type Message {
   message: String!
   photo: String
   timeStamp: String
-  writer: Profile
+  writer: String
 }
 
 input MakeRoomInput {
-  users: [Profile]
+  users: [String]
   name: String
 }
 
+input SendMessageInput {
+  roomId: String!
+  message: String!
+  photo: String
+}
+
+input GetRecentMessageInput {
+  roomId: String!
+}
+
 type Subscription {
-  sentMessage(message: String!, roomId: String!): Message
+  sentMessage(roomId: String): Message @aws_subscribe(mutations: ["sendMessage"])
 }
 
 type Church {
@@ -148,6 +160,7 @@ type Profile {
   photo: String
   birthDay: String
   position: String
+  church: String!
 }
 
 type UserChurch {

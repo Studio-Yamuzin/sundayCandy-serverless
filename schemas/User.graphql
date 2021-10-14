@@ -5,6 +5,7 @@ type Profile {
   photo: String
   birthDay: String
   position: String
+  church: String!
 }
 
 # 사용자의 교회
@@ -38,6 +39,7 @@ type OnboardingStep {
 
 type Query {
   getProfile: Profile
+  getChurchUsers: [Profile] 
   getUserChurch: UserChurch
   getOnboardingStep: OnboardingStep
 }

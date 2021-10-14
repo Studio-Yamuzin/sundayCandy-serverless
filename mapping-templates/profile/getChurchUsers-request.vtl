@@ -1,0 +1,10 @@
+{
+    "version": "2017-02-28",
+    "operation": "Invoke",
+    "payload": {
+        "field": "getChurchUsers",
+        "userId": "$util.defaultIfNullOrBlank(${context.identity.cognitoIdentityId},"test")",
+        "arguments":  $utils.toJson($context.arguments),
+        "headers": $utils.toJson($context.request.headers)
+    }
+}

@@ -1,36 +1,48 @@
 type Room {
-  roomId: String!
-  name: String
-  messages: [Message]
-  roomMemberships: [RoomMembership]
+  roomType: String!
 }
 
-type RoomMembership {
-  members: [Profile]
-}
+type Connection {
+  userId: String!
+  roomName: String
+  roomType: String!
+  recentMessage: String
+} # 유저별로 각각 가지는 방의 정보도 이 스킴에 담을 예정
 
 type Message {
   message: String!
   photo: String
   timeStamp: String
-  writer: Profile
+  writer: String # user PK
 }
 
 type Query {
-  getMyRooms: [Room]
+  getMyChatRooms: [Connection]
   getRoomInformation: Room
+  getRecentMessage(input: GetRecentMessageInput): Message
 }
 
 input MakeRoomInput {
-  users: [Profile]
+  users: [String] # user PKs
   name: String
 }
 
+input SendMessageInput {
+  roomId: String!
+  message: String!
+  photo: String
+}
+
+input GetRecentMessageInput {
+  roomId: String!
+}
+
 type Mutation {
-  makeRoom(input: MakeRoomInput): Room
-  sendMessage(message: String! roomId: String!): Message
+  makeGeneralRoom(input: SendMessageInput): Connection
+  sendMessage(input: SendMessageInput): Message
 }
 
 type Subscription {
-  sentMessage(message: String! roomId: String!): Message
+  sentMessage(roomId: String): Message
+    @aws_subscribe(mutations: ["sendMessage"])
 }
