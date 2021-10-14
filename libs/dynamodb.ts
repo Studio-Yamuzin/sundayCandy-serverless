@@ -1,5 +1,4 @@
 import {DynamoDB} from "aws-sdk";
-import { PutItemInput, QueryInput } from "aws-sdk/clients/dynamodb";
 
 type QueryParamsType = {
   TableName: string;
@@ -28,12 +27,12 @@ const call = (action, params) => {
 
 const queryByKeys = async(PK: string, SK: string, tableName?: string, indexName?: string) => {
   const result = [];
-  const params: QueryInput = {
+  const params: QueryParamsType = {
     TableName: tableName ?? process.env.tableName,
     KeyConditionExpression: "PK = :PK and SK = :SK",
     ExpressionAttributeValues: {
-      [":PK"]: PK,
-      [":SK"]: SK,
+      ":PK": PK,
+      ":SK": SK,
     },
     ScanIndexForward: false,
     IndexName: indexName ?? null
