@@ -39,14 +39,6 @@ export type Church = {
   type?: Maybe<Scalars['String']>;
 };
 
-export type Connection = {
-  __typename?: 'Connection';
-  recentMessage?: Maybe<Scalars['String']>;
-  roomName?: Maybe<Scalars['String']>;
-  roomType: Scalars['String'];
-  userId?: Maybe<Scalars['String']>;
-};
-
 export type Contemplation = {
   __typename?: 'Contemplation';
   content?: Maybe<Scalars['String']>;
@@ -76,8 +68,14 @@ export type CreateContemplationInput = {
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+export type CreateRoomInput = {
+  name?: Maybe<Scalars['String']>;
+  users?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
 export type CreateUserIput = {
   birthDay?: Maybe<Scalars['String']>;
+  church?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
   photo?: Maybe<Scalars['String']>;
@@ -115,9 +113,8 @@ export type GetRecentMessageInput = {
   roomId: Scalars['String'];
 };
 
-export type MakeRoomInput = {
-  name?: Maybe<Scalars['String']>;
-  users?: Maybe<Array<Maybe<Scalars['String']>>>;
+export type GetRoomMessagesInput = {
+  roomId: Scalars['String'];
 };
 
 export type Message = {
@@ -125,6 +122,7 @@ export type Message = {
   message: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
   timeStamp?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
   writer?: Maybe<Scalars['String']>;
 };
 
@@ -133,9 +131,9 @@ export type Mutation = {
   createBookmark?: Maybe<Bookmark>;
   createChurch?: Maybe<Church>;
   createContemplation?: Maybe<Contemplation>;
+  createGeneralRoom?: Maybe<RoomInfo>;
   createProfile?: Maybe<Profile>;
   deleteBookmark?: Maybe<Bookmark>;
-  makeGeneralRoom?: Maybe<Connection>;
   sendMessage?: Maybe<Message>;
   updateChurch?: Maybe<Church>;
   updateProfile?: Maybe<Profile>;
@@ -157,6 +155,11 @@ export type MutationCreateContemplationArgs = {
 };
 
 
+export type MutationCreateGeneralRoomArgs = {
+  input?: Maybe<CreateRoomInput>;
+};
+
+
 export type MutationCreateProfileArgs = {
   input?: Maybe<CreateUserIput>;
 };
@@ -164,11 +167,6 @@ export type MutationCreateProfileArgs = {
 
 export type MutationDeleteBookmarkArgs = {
   input?: Maybe<DeleteBookmarkInput>;
-};
-
-
-export type MutationMakeGeneralRoomArgs = {
-  input?: Maybe<SendMessageInput>;
 };
 
 
@@ -217,11 +215,11 @@ export type Query = {
   getContemplationAll?: Maybe<Array<Maybe<Contemplation>>>;
   getMyBookmarkByChapter?: Maybe<Bookmark>;
   getMyBookmarks?: Maybe<Array<Maybe<Bookmark>>>;
-  getMyChatRooms?: Maybe<Array<Maybe<Connection>>>;
+  getMyChatRooms?: Maybe<Array<Maybe<RoomInfo>>>;
   getOnboardingStep?: Maybe<OnboardingStep>;
   getProfile?: Maybe<Profile>;
   getRecentMessage?: Maybe<Message>;
-  getRoomInformation?: Maybe<Room>;
+  getRoomMessages?: Maybe<Array<Maybe<Message>>>;
   getUserChurch?: Maybe<UserChurch>;
 };
 
@@ -255,9 +253,17 @@ export type QueryGetRecentMessageArgs = {
   input?: Maybe<GetRecentMessageInput>;
 };
 
-export type Room = {
-  __typename?: 'Room';
+
+export type QueryGetRoomMessagesArgs = {
+  input?: Maybe<GetRoomMessagesInput>;
+};
+
+export type RoomInfo = {
+  __typename?: 'RoomInfo';
+  recentMessage?: Maybe<Scalars['String']>;
+  roomName?: Maybe<Scalars['String']>;
   roomType: Scalars['String'];
+  users: Array<Maybe<Scalars['String']>>;
 };
 
 export type SendMessageInput = {

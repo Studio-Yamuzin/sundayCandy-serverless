@@ -52,8 +52,8 @@ type Query {
   getBibleByVerseList(input: GetBibleByVerseInput!): [Bible]
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
-  getMyChatRooms: [Connection]
-  getRoomInformation: Room
+  getMyChatRooms: [RoomInfo]
+  getRoomMessages(input: GetRoomMessagesInput): [Message]
   getRecentMessage(input: GetRecentMessageInput): Message
   getChurch(chuchId: ID!): Church
   getContemplationAll: [Contemplation]
@@ -66,7 +66,7 @@ type Query {
 type Mutation {
   createBookmark(input: CreateBookmarkInput): Bookmark
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
-  makeGeneralRoom(input: SendMessageInput): Connection
+  createGeneralRoom(input: CreateRoomInput): RoomInfo
   sendMessage(input: SendMessageInput): Message
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
@@ -75,12 +75,8 @@ type Mutation {
   updateProfile(input: UpdateUserInfo): Profile
 }
 
-type Room {
-  roomType: String!
-}
-
-type Connection {
-  userId: String
+type RoomInfo {
+  users: [String]!
   roomName: String
   roomType: String!
   recentMessage: String
@@ -91,9 +87,10 @@ type Message {
   photo: String
   timeStamp: String
   writer: String
+  type: String!
 }
 
-input MakeRoomInput {
+input CreateRoomInput {
   users: [String]
   name: String
 }
@@ -105,6 +102,10 @@ input SendMessageInput {
 }
 
 input GetRecentMessageInput {
+  roomId: String!
+}
+
+input GetRoomMessagesInput {
   roomId: String!
 }
 
@@ -173,6 +174,7 @@ input CreateUserIput {
   birthDay: String
   photo: String
   position: String
+  church: String
 }
 
 input UpdateUserInfo {
