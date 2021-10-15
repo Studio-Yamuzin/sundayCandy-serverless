@@ -1,5 +1,5 @@
 type RoomInfo {
-  roomId: String!
+  roomId: ID!
   users: [String]!
   roomName: String
   roomType: String!
@@ -8,6 +8,7 @@ type RoomInfo {
 } # 유저별로 각각 가지는 방의 정보도 이 스킴에 담을 예정
 
 type Message {
+  roomId: ID!
   message: String!
   photo: String
   timeStamp: String
@@ -41,10 +42,10 @@ type Query {
 
 type Mutation {
   createGeneralRoom(input: CreateRoomInput): RoomInfo
-  sendMessage(input: SendMessageInput, roomId: String): Message
+  sendMessage(roomId: ID!, input: SendMessageInput): Message
 }
 
 type Subscription {
-  sentMessage(roomId: String): Message
+  sentMessage(roomId: ID!): Message
     @aws_subscribe(mutations: ["sendMessage"])
 }
