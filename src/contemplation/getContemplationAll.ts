@@ -1,21 +1,27 @@
-import { getUserChurch } from "@src/church/getUserChurch";
+import { getProfile } from "@src/profile/getProfile";
 import { Contemplation } from "@src/types";
 import { dynamodb } from "libs/dynamodb";
 
-export const getContemplationAll = async(userId: string): Promise<Array<Contemplation | undefined>> => {
+export const getContemplationAll = async(userId: string): Promise<Contemplation[]> => {
   try{
-    const church = await getUserChurch(userId);
-    const result = await dynamodb.queryByBeginsWithChurchIndex(church.name, "contemplation");
-    const mappedResult: Array<Contemplation | undefined> =  result.map((item)=> {
-      if(item.range === "public"){
-        return{
-          references: item.references,
-          content: item.content,
-          date: item.createdAt,
+    const {church} = await getProfile(userId);
+    const result = await dynamodb.queryByBeginsWithChurchIndex(church, "contemplation");
+    const mappedResult = await Promise.all(
+      result?.filter((item)=> {
+        if(item.range === "public"){
+          return item;
         }
-      }
-    });
-    return mappedResult;
+      }).map(async(item): Promise<Contemplation>=> {
+        const profile = await getProfile(userId);
+          return{
+            references: item.references,
+            content: item.content,
+            date: item.createdAt,
+            profile: profile,
+          }
+      })
+    );
+    return mappedResult.sort((contemplationA, contemplationB)=> new Date(contemplationB.date).getTime() - new Date(contemplationA.date).getTime());
   }catch(error){
     throw new Error("묵상 가져오기에 실패했어요.");
   }

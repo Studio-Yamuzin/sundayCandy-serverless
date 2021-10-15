@@ -1,15 +1,7 @@
+import { CreateUserIput } from "@src/types";
 import { dynamodb } from "libs/dynamodb"
 
-interface IMutationArguments {
-  userId: string;
-  name: string;
-  phoneNumber: string;
-  photo: string;
-  position: string;
-  birthDay: string;
-}
-
-export const createProfile = async(userId, {name, phoneNumber, photo, position, birthDay}: IMutationArguments) => {
+export const createProfile = async(userId, {name, phoneNumber, photo, position, birthDay, church}: CreateUserIput) => {
   await dynamodb.putItem({
     PK: userId,
     SK: `profile`,
@@ -18,5 +10,6 @@ export const createProfile = async(userId, {name, phoneNumber, photo, position, 
     position,
     phoneNumber,
     birthDay,
+    church,
   });
 }
