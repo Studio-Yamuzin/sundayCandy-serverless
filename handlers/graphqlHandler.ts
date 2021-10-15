@@ -14,10 +14,11 @@ import { getMyBookmarks } from '@src/bible/getMyBookmarks';
 import { getMyBookmarkByChapter } from '@src/bible/getMyBookmarkByChapter';
 import { createContemplation } from '@src/contemplation/createContemplation';
 import { getContemplationAll } from '@src/contemplation/getContemplationAll';
-import { makeGeneralRoom } from '@src/chat/makeGeneralRoom';
+import { createGeneralRoom } from '@src/chat/createGeneralRoom';
 import { sendMessage } from '@src/chat/sendMessage';
 import { getChurchUsers } from '@src/profile/getChurchUsers';
 import { getMyChatRooms } from '@src/chat/getMyChatRooms';
+import { getRoomMessages } from '@src/chat/getRoomMessages';
 
 export const main: Handler = async(event, context) => {
   console.log(JSON.stringify(context));
@@ -53,14 +54,16 @@ export const main: Handler = async(event, context) => {
         return await createContemplation(event.userId, event.arguments.input);
       case "getContemplationAll":
         return await getContemplationAll(event.userId);
-      case "makeGeneralRoom":
-        return await makeGeneralRoom(event.userId, event.arguments.input);
+      case "createGeneralRoom":
+        return await createGeneralRoom(event.userId, event.arguments.input);
       case "sendMessage":
-        return await sendMessage(event.userId, event.arguments.input);
+        return await sendMessage(event.userId, event.arguments.input, event.arguments.roomId);
       case "getChurchUsers":
         return await getChurchUsers(event.userId);
       case "getMyChatRooms":
         return await getMyChatRooms(event.userId);
+      case "getRoomMessages":
+        return await getRoomMessages(event.userId, event.arguments.input);
       default:
         throw new Error("Wrong Field.");
     }
