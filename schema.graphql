@@ -67,7 +67,7 @@ type Mutation {
   createBookmark(input: CreateBookmarkInput): Bookmark
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
   createGeneralRoom(input: CreateRoomInput): RoomInfo
-  sendMessage(input: SendMessageInput): Message
+  sendMessage(roomId: ID!, input: SendMessageInput): Message
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
@@ -76,13 +76,16 @@ type Mutation {
 }
 
 type RoomInfo {
+  roomId: ID!
   users: [String]!
   roomName: String
   roomType: String!
   recentMessage: String
+  timeStamp: String
 }
 
 type Message {
+  roomId: ID!
   message: String!
   photo: String
   timeStamp: String
@@ -96,7 +99,6 @@ input CreateRoomInput {
 }
 
 input SendMessageInput {
-  roomId: String!
   message: String!
   photo: String
 }
@@ -110,7 +112,7 @@ input GetRoomMessagesInput {
 }
 
 type Subscription {
-  sentMessage(roomId: String): Message @aws_subscribe(mutations: ["sendMessage"])
+  sentMessage(roomId: ID!): Message @aws_subscribe(mutations: ["sendMessage"])
 }
 
 type Church {

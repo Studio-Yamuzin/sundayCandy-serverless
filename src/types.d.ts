@@ -121,6 +121,7 @@ export type Message = {
   __typename?: 'Message';
   message: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
+  roomId: Scalars['ID'];
   timeStamp?: Maybe<Scalars['String']>;
   type: Scalars['String'];
   writer?: Maybe<Scalars['String']>;
@@ -172,6 +173,7 @@ export type MutationDeleteBookmarkArgs = {
 
 export type MutationSendMessageArgs = {
   input?: Maybe<SendMessageInput>;
+  roomId: Scalars['ID'];
 };
 
 
@@ -261,15 +263,16 @@ export type QueryGetRoomMessagesArgs = {
 export type RoomInfo = {
   __typename?: 'RoomInfo';
   recentMessage?: Maybe<Scalars['String']>;
+  roomId: Scalars['ID'];
   roomName?: Maybe<Scalars['String']>;
   roomType: Scalars['String'];
+  timeStamp?: Maybe<Scalars['String']>;
   users: Array<Maybe<Scalars['String']>>;
 };
 
 export type SendMessageInput = {
   message: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
-  roomId: Scalars['String'];
 };
 
 export type Subscription = {
@@ -279,7 +282,7 @@ export type Subscription = {
 
 
 export type SubscriptionSentMessageArgs = {
-  roomId?: Maybe<Scalars['String']>;
+  roomId: Scalars['ID'];
 };
 
 export type UpdateChurchInput = {
