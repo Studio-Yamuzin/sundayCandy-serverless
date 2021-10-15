@@ -1,8 +1,10 @@
 type RoomInfo {
+  roomId: String!
   users: [String]!
   roomName: String
   roomType: String!
   recentMessage: String
+  timeStamp: String
 } # 유저별로 각각 가지는 방의 정보도 이 스킴에 담을 예정
 
 type Message {
@@ -19,7 +21,6 @@ input CreateRoomInput {
 }
 
 input SendMessageInput {
-  roomId: String!
   message: String!
   photo: String
 }
@@ -40,7 +41,7 @@ type Query {
 
 type Mutation {
   createGeneralRoom(input: CreateRoomInput): RoomInfo
-  sendMessage(input: SendMessageInput): Message
+  sendMessage(input: SendMessageInput, roomId: String): Message
 }
 
 type Subscription {
