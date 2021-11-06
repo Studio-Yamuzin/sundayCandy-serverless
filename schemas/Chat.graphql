@@ -1,28 +1,30 @@
 type RoomInfo {
   roomId: ID!
-  users: [String]!
+  users: [Profile]!
   roomName: String
   roomType: String!
-  recentMessage: String
-  timeStamp: String
+  recentMessage: Message
+  unReadCount: Int
+  photo: String
 } # 유저별로 각각 가지는 방의 정보도 이 스킴에 담을 예정
 
 type Message {
   roomId: ID!
-  message: String!
+  message: String
   photo: String
   timeStamp: String
   writer: String # user PK
-  type: String!
+  type: String
 }
 
 input CreateRoomInput {
   users: [String] # user PKs
   name: String
+  photoUri: String
 }
 
 input SendMessageInput {
-  message: String!
+  message: String
   photo: String
 }
 

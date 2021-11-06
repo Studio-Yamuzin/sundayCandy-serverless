@@ -77,11 +77,12 @@ type Mutation {
 
 type RoomInfo {
   roomId: ID!
-  users: [String]!
+  users: [Profile]!
   roomName: String
   roomType: String!
-  recentMessage: String
-  timeStamp: String
+  recentMessage: Message
+  unReadCount: Int
+  photo: String
 }
 
 type Message {
@@ -96,6 +97,7 @@ type Message {
 input CreateRoomInput {
   users: [String]
   name: String
+  photoUri: String
 }
 
 input SendMessageInput {
@@ -184,6 +186,10 @@ input UpdateUserInfo {
   phoneNumber: String
   photo: String
   position: String
+}
+
+input GetProfilesInput {
+  users: [String]
 }
 
 enum OnboardingStepType {

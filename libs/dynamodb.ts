@@ -91,17 +91,17 @@ const queryBySK = async (SK: string, tableName?: string) => {
 }
 
 
-const queryByBeginsWith = async(PK: string, word: string, tableName?: string) => {
+const queryByBeginsWith = async(PK: string, word: string, option?: {tableName?: string, down?: boolean}) => {
   try{
     const result = [];
     const params: QueryParamsType = {
-      TableName: tableName ?? process.env.tableName,
+      TableName: option?.tableName ?? process.env.tableName,
       KeyConditionExpression: "PK = :PK and begins_with(SK, :WORD)",
       ExpressionAttributeValues: {
         ":PK": PK,
         ":WORD": word,
       },
-      ScanIndexForward: false,
+      ScanIndexForward: option?.down ?? false,
     };
     let items;
     do {

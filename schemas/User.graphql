@@ -29,6 +29,10 @@ input UpdateUserInfo {
   position: String
 }
 
+input GetProfilesInput {
+  users: [String]
+}
+
 enum OnboardingStepType {
   onboarding
   end

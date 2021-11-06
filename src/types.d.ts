@@ -70,6 +70,7 @@ export type CreateContemplationInput = {
 
 export type CreateRoomInput = {
   name?: Maybe<Scalars['String']>;
+  photoUri?: Maybe<Scalars['String']>;
   users?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -107,6 +108,10 @@ export type GetBibleByVerseListInput = {
 export type GetMyBookmarkByChapterInput = {
   chapter: Scalars['Int'];
   title: Scalars['String'];
+};
+
+export type GetProfilesInput = {
+  users?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type GetRecentMessageInput = {
@@ -262,12 +267,13 @@ export type QueryGetRoomMessagesArgs = {
 
 export type RoomInfo = {
   __typename?: 'RoomInfo';
-  recentMessage?: Maybe<Scalars['String']>;
+  photo?: Maybe<Scalars['String']>;
+  recentMessage?: Maybe<Message>;
   roomId: Scalars['ID'];
   roomName?: Maybe<Scalars['String']>;
   roomType: Scalars['String'];
-  timeStamp?: Maybe<Scalars['String']>;
-  users: Array<Maybe<Scalars['String']>>;
+  unReadCount?: Maybe<Scalars['Int']>;
+  users: Array<Maybe<Profile>>;
 };
 
 export type SendMessageInput = {
