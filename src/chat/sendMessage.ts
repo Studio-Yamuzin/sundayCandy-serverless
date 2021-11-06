@@ -1,12 +1,12 @@
 import { Message, SendMessageInput } from "@src/types";
 import { dynamodb } from "libs/dynamodb";
-import uuid from 'time-uuid';
+import {ulid} from 'ulid';
 
 export const sendMessage = async(userId: string, {message, photo}: SendMessageInput, roomId: string): Promise<Message> => {
   try{
     await dynamodb.putItem({
       PK: `${roomId}`,
-      SK: `message-${uuid()}`,
+      SK: `message-${ulid()}`,
       message: message,
       photo: photo,
       writer: userId,

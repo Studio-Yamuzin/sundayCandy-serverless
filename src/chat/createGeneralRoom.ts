@@ -1,11 +1,12 @@
+import { getProfiles } from "@src/profile/getProfiles";
 import { createMessageHelper } from "@src/service/Message";
 import {RoomInfo, CreateRoomInput} from "@src/types";
 import { dynamodb } from "libs/dynamodb";
-import uuid from 'time-uuid';
+import {ulid} from 'ulid';
 
-export const createGeneralRoom = async(userId, {users, name}: CreateRoomInput): Promise<RoomInfo> => {
+export const createGeneralRoom = async(userId, {users, name, photoUri}: CreateRoomInput): Promise<RoomInfo> => {
   try{
-    const roomId = uuid();
+    const roomId = ulid();
     await Promise.all(
       [
         dynamodb.putItem({
@@ -19,6 +20,8 @@ export const createGeneralRoom = async(userId, {users, name}: CreateRoomInput): 
           roomName: name,
           users: [...users, userId],
           type: 'general',
+          photo: photoUri,
+          recentReadMessage: null,
         }),
         users.map(async (user)=> {
           return await dynamodb.putItem({
@@ -26,7 +29,9 @@ export const createGeneralRoom = async(userId, {users, name}: CreateRoomInput): 
             SK: `connection-${user}`,
             roomName: name,
             users: [...users, userId],
-            type: 'general'
+            type: 'general',
+            photo: photoUri,
+            recentReadMessage: null,
           });
         }),
       ]
@@ -37,12 +42,14 @@ export const createGeneralRoom = async(userId, {users, name}: CreateRoomInput): 
       type: 'system',
       message: `${name ?? "새로운"} 채팅방이 개설되었습니다.`,
     });
+    const profiles = await getProfiles([...users, userId]);
     return {
       roomId,
-      users: [...users, userId],
+      users: profiles,
       roomName: name,
       roomType: 'general',
       recentMessage: null,
+      unReadCount: 0,
     }
   }catch(error){
     throw new Error("방 생성에 실패하였습니다.");

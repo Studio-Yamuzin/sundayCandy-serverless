@@ -1,6 +1,6 @@
 import { Message } from "@src/types";
 import { dynamodb } from "libs/dynamodb";
-import uuid from 'time-uuid';
+import {ulid} from 'ulid';
 
 /*
   서비스 흐름상 메시지를 추가할 때 사용해야 합니다.
@@ -19,7 +19,7 @@ export const createMessage = async ({writer, roomId, type, message, photo}: IPar
   try{
     await dynamodb.putItem({
       PK: roomId,
-      SK: `message-${uuid()}`,
+      SK: `message-${ulid()}`,
       message: message,
       photo,
       type: type,

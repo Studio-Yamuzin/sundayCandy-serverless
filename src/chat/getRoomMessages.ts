@@ -3,7 +3,9 @@ import { dynamodb } from "libs/dynamodb"
 
 export const getRoomMessages = async (userId: string, {roomId}:GetRoomMessagesInput): Promise<Message[]> => {
   try{
-    const messages = await dynamodb.queryByBeginsWith(roomId, "message");
+    const messages = await dynamodb.queryByBeginsWith(roomId, "message", {
+      down: true,
+    });
     const mappedMessages: Message[] = messages.map((message)=> {
       return {
         roomId: roomId,

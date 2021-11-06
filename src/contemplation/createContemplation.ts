@@ -1,14 +1,14 @@
 import { getProfile } from "@src/profile/getProfile";
 import { Contemplation, CreateContemplationInput } from "@src/types";
 import { dynamodb } from "libs/dynamodb";
-import timeUuid from 'time-uuid';
+import {ulid} from 'ulid';
 
 export const createContemplation = async(userId: string, {content, references, range}: CreateContemplationInput): Promise<Contemplation> => {
   try{
     const {church} = await getProfile(userId);
     const params = {
       PK: userId,
-      SK: `contemplation-${timeUuid()}`,
+      SK: `contemplation-${ulid()}`,
       church: church,
       content: content,
       references: references,
