@@ -6,11 +6,19 @@ type Profile {
   birthDay: String
   position: String
   church: String!
+  level: String
 }
 
 # 사용자의 교회
 type UserChurch {
   name: String
+}
+
+type Code {
+  id: ID!
+  verifyNumber: String!
+  level: String!
+  createdAt: String!
 }
 
 input CreateUserIput {
@@ -33,13 +41,16 @@ input GetProfilesInput {
   users: [String]
 }
 
-enum OnboardingStepType {
-  onboarding
-  end
+input VerifyCodeInput {
+  verifyNumber: Int
+}
+
+input CreateCodeInput {
+  level: String
 }
 
 type OnboardingStep {
-  step: OnboardingStepType
+  step: String
 }
 
 type Query {
@@ -52,4 +63,6 @@ type Query {
 type Mutation {
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
+  verifyCode(input: VerifyCodeInput): Profile
+  createCode(input: CreateCodeInput): Code
 }
