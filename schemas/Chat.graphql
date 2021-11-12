@@ -1,8 +1,8 @@
 type RoomInfo {
   roomId: ID!
-  users: [Profile]!
+  users: [Profile]
   roomName: String
-  roomType: String!
+  roomType: String
   recentMessage: Message
   unReadCount: Int
   photo: String
@@ -10,11 +10,17 @@ type RoomInfo {
 
 type Message {
   roomId: ID!
+  key: ID!
   message: String
   photo: String
   timeStamp: String
   writer: String # user PK
   type: String
+}
+
+type PaginatedMessages {
+  messages: [Message]
+  isLast: Boolean
 }
 
 input CreateRoomInput {
@@ -34,17 +40,36 @@ input GetRecentMessageInput {
 
 input GetRoomMessagesInput {
   roomId: String!
+  key: String
+  limit: Int
+}
+
+input UpdateRoomSettingInput {
+  roomId: String!
+  title: String
+  photoUri: String
+}
+
+input GetMyChatRoomInfoInput {
+  roomId: String!
+}
+
+input ExitRoomInput {
+  roomId: String!
 }
 
 type Query {
   getMyChatRooms: [RoomInfo]
-  getRoomMessages(input: GetRoomMessagesInput): [Message]
+  getMyChatRoomInfo(input: GetMyChatRoomInfoInput): RoomInfo
+  getRoomMessages(input: GetRoomMessagesInput): PaginatedMessages
   getRecentMessage(input: GetRecentMessageInput): Message
 }
 
 type Mutation {
   createGeneralRoom(input: CreateRoomInput): RoomInfo
   sendMessage(roomId: ID!, input: SendMessageInput): Message
+  updateRoomSetting(input: UpdateRoomSettingInput): RoomInfo
+  exitRoom(input: ExitRoomInput): [RoomInfo]
 }
 
 type Subscription {
