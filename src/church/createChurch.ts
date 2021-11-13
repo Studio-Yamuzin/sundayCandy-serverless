@@ -1,9 +1,11 @@
+import { getProfile } from "@src/profile/getProfile";
 import { Church, CreateChurchInput, Maybe} from "@src/types";
 import { dynamodb } from "libs/dynamodb"
 
 export const createChurch = async(userId: string, {name, type, description, address, phoneNumber}: CreateChurchInput): Promise<Maybe<Church>> => {
   try{
     const churchId = `church-${name}`;
+    const profile = await getProfile(userId);
     await dynamodb.putItem({
       PK: churchId,
       SK: `profile`,
@@ -17,6 +19,10 @@ export const createChurch = async(userId: string, {name, type, description, addr
       PK: userId,
       SK: 'church',
       name,
+    });
+    await dynamodb.putItem({
+      ...profile,
+      level: "1",
     });
   
     return {

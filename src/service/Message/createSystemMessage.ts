@@ -16,10 +16,11 @@ interface IParameter {
 }
 
 export const createMessage = async ({writer, roomId, type, message, photo}: IParameter): Promise<Message> => {
+  const key = `message-${ulid()}`;
   try{
     await dynamodb.putItem({
       PK: roomId,
-      SK: `message-${ulid()}`,
+      SK: key,
       message: message,
       photo,
       type: type,
@@ -28,6 +29,7 @@ export const createMessage = async ({writer, roomId, type, message, photo}: IPar
   
     return {
       writer,
+      key,
       photo,
       timeStamp: new Date().getUTCDate().toString(),
       type,
