@@ -53,7 +53,8 @@ type Query {
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
   getMyChatRooms: [RoomInfo]
-  getRoomMessages(input: GetRoomMessagesInput): [Message]
+  getMyChatRoomInfo(input: GetMyChatRoomInfoInput): RoomInfo
+  getRoomMessages(input: GetRoomMessagesInput): PaginatedMessages
   getRecentMessage(input: GetRecentMessageInput): Message
   getChurch(chuchId: ID!): Church
   getContemplationAll: [Contemplation]
@@ -68,18 +69,22 @@ type Mutation {
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
   createGeneralRoom(input: CreateRoomInput): RoomInfo
   sendMessage(roomId: ID!, input: SendMessageInput): Message
+  updateRoomSetting(input: UpdateRoomSettingInput): RoomInfo
+  exitRoom(input: ExitRoomInput): [RoomInfo]
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
+  verifyCode(input: VerifyCodeInput): Profile
+  createCode(input: CreateCodeInput): Code
 }
 
 type RoomInfo {
   roomId: ID!
-  users: [Profile]!
+  users: [Profile]
   roomName: String
-  roomType: String!
+  roomType: String
   recentMessage: Message
   unReadCount: Int
   photo: String
@@ -87,11 +92,17 @@ type RoomInfo {
 
 type Message {
   roomId: ID!
-  message: String!
+  key: ID!
+  message: String
   photo: String
   timeStamp: String
   writer: String
-  type: String!
+  type: String
+}
+
+type PaginatedMessages {
+  messages: [Message]
+  isLast: Boolean
 }
 
 input CreateRoomInput {
@@ -101,7 +112,7 @@ input CreateRoomInput {
 }
 
 input SendMessageInput {
-  message: String!
+  message: String
   photo: String
 }
 
@@ -110,6 +121,22 @@ input GetRecentMessageInput {
 }
 
 input GetRoomMessagesInput {
+  roomId: String!
+  key: String
+  limit: Int
+}
+
+input UpdateRoomSettingInput {
+  roomId: String!
+  title: String
+  photoUri: String
+}
+
+input GetMyChatRoomInfoInput {
+  roomId: String!
+}
+
+input ExitRoomInput {
   roomId: String!
 }
 
@@ -166,10 +193,18 @@ type Profile {
   birthDay: String
   position: String
   church: String!
+  level: String
 }
 
 type UserChurch {
   name: String
+}
+
+type Code {
+  id: ID!
+  verifyNumber: String!
+  level: String!
+  createdAt: String!
 }
 
 input CreateUserIput {
@@ -192,13 +227,16 @@ input GetProfilesInput {
   users: [String]
 }
 
-enum OnboardingStepType {
-  onboarding
-  end
+input VerifyCodeInput {
+  verifyNumber: Int
+}
+
+input CreateCodeInput {
+  level: String
 }
 
 type OnboardingStep {
-  step: OnboardingStepType
+  step: String
 }
 
 schema {
