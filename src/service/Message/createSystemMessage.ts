@@ -1,6 +1,6 @@
-import { Message } from "@src/types";
-import { dynamodb } from "libs/dynamodb";
-import {ulid} from 'ulid';
+import { Message } from '@src/types';
+import { dynamodb } from 'libs/dynamodb';
+import { ulid } from 'ulid';
 
 /*
   서비스 흐름상 메시지를 추가할 때 사용해야 합니다.
@@ -15,18 +15,20 @@ interface IParameter {
   photo?: string;
 }
 
-export const createMessage = async ({writer, roomId, type, message, photo}: IParameter): Promise<Message> => {
+export const createMessage = async ({
+  writer, roomId, type, message, photo,
+}: IParameter): Promise<Message> => {
   const key = `message-${ulid()}`;
-  try{
+  try {
     await dynamodb.putItem({
       PK: roomId,
       SK: key,
-      message: message,
+      message,
       photo,
-      type: type,
-      writer: writer ?? "system",
+      type,
+      writer: writer ?? 'system',
     });
-  
+
     return {
       writer,
       key,
@@ -34,9 +36,9 @@ export const createMessage = async ({writer, roomId, type, message, photo}: IPar
       timeStamp: new Date().getUTCDate().toString(),
       type,
       roomId,
-      message: message,
-    }
-  }catch(error){
-    throw new Error("메시지 생성에 실패했습니다.");
+      message,
+    };
+  } catch (error) {
+    throw new Error('메시지 생성에 실패했습니다.');
   }
-}
+};
