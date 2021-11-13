@@ -94,3 +94,18 @@ Templates:
     field: getRoomMessages
     request: "chat/getRoomMessages-request.vtl"
     response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: createCode
+    request: "code/createCode-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getMyChatRoomInfo
+    request: "chat/getMyChatRoomInfo-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: exitRoom
+    request: "chat/exitRoom-request.vtl"
+    response: "common/lambda-response.vtl"
