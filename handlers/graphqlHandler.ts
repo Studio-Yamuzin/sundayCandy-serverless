@@ -1,4 +1,4 @@
-import {Handler} from 'aws-lambda';
+import { Handler } from 'aws-lambda';
 
 import { createChurch } from '@src/church/createChurch';
 import { createProfile } from '@src/profile/createProfile';
@@ -19,56 +19,77 @@ import { sendMessage } from '@src/chat/sendMessage';
 import { getChurchUsers } from '@src/profile/getChurchUsers';
 import { getMyChatRooms } from '@src/chat/getMyChatRooms';
 import { getRoomMessages } from '@src/chat/getRoomMessages';
+import { createCode } from '@src/onboarding/createCode';
+import { getMyChatRoomInfo } from '@src/chat/getMyChatRoomInfo';
+import { updateRoomSetting } from '@src/chat/updateRoomSetting';
+import { exitRoom } from '@src/chat/exitRoom';
 
-export const main: Handler = async(event, context) => {
+export const main: Handler = async (event, context) => {
   console.log(JSON.stringify(context));
-  console.log(`graphqlHandler =>\n{\nfield : '${event.field}',\nuserId : '${event.userId}'\n}`);
+  console.log(
+    `graphqlHandler =>\n{\nfield : '${event.field}',\nuserId : '${event.userId}'\n}`,
+  );
   console.log(event);
-  try{
-    switch(event.field){
-      case "createChurch":
+  try {
+    switch (event.field) {
+      case 'createChurch':
         return await createChurch(event.userId, event.arguments.input);
-      case "getUserChurch":
+      case 'getUserChurch':
         return await getUserChurch(event.userId);
-      case "getChurch":
+      case 'getChurch':
         return await getChurch(event.arguments.input.churchId);
-      case "createProfile":
+      case 'createProfile':
         return await createProfile(event.userId, event.arguments.input);
-      case "getProfile":
+      case 'getProfile':
         return await getProfile(event.userId);
-      case "getOnboardingStep":
+      case 'getOnboardingStep':
         return await getOnboardingStep(event.userId);
-      case "getBibleByChapter":
+      case 'getBibleByChapter':
         return await getBibleByChapter(event.arguments.input);
-      case "getBibleByVerse":
+      case 'getBibleByVerse':
         return await getBibleByVerse(event.arguments.input);
-      case "createBookmark":
+      case 'createBookmark':
         return await createBookmark(event.userId, event.arguments.input);
-      case "deleteBookmark":
+      case 'deleteBookmark':
         return await deleteBookmark(event.userId, event.arguments.input);
-      case "getMyBookmarks":
+      case 'getMyBookmarks':
         return await getMyBookmarks(event.userId);
-      case "getMyBookmarkByChapter":
-        return await getMyBookmarkByChapter(event.userId, event.arguments.input);
-      case "createContemplation":
+      case 'getMyBookmarkByChapter':
+        return await getMyBookmarkByChapter(
+          event.userId,
+          event.arguments.input,
+        );
+      case 'createContemplation':
         return await createContemplation(event.userId, event.arguments.input);
-      case "getContemplationAll":
+      case 'getContemplationAll':
         return await getContemplationAll(event.userId);
-      case "createGeneralRoom":
+      case 'createGeneralRoom':
         return await createGeneralRoom(event.userId, event.arguments.input);
-      case "sendMessage":
-        return await sendMessage(event.userId, event.arguments.input, event.arguments.roomId);
-      case "getChurchUsers":
+      case 'sendMessage':
+        return await sendMessage(
+          event.userId,
+          event.arguments.input,
+          event.arguments.roomId,
+        );
+      case 'getChurchUsers':
         return await getChurchUsers(event.userId);
-      case "getMyChatRooms":
+      case 'getMyChatRooms':
         return await getMyChatRooms(event.userId);
-      case "getRoomMessages":
+      case 'getRoomMessages':
         return await getRoomMessages(event.userId, event.arguments.input);
+      case 'createCode':
+        return await createCode(event.userId, event.arguments.input);
+      case 'getMyChatRoomInfo':
+        return await getMyChatRoomInfo(event.userId, event.arguments.input);
+      case 'updateRoomSetting':
+        return await updateRoomSetting(event.userId, event.arguments.input);
+      case 'exitRoom':
+        return await exitRoom(event.userId, event.arguments.input);
       default:
-        throw new Error("Wrong Field.");
+        throw new Error('GraphqlQL Fields are not valid');
     }
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return error;
   }
-}
+};

@@ -121,3 +121,9 @@ functions:
     timeout: 900
     stage:
       - ${self:custom.stage}
+  sendFcm:
+    handler: src/service/PushAlarm/sendFcm.main
+    events:
+      - http:
+          path: sendFcm
+          method: post
