@@ -1,9 +1,28 @@
 type Contemplation {
+  id: ID! # Contemplation 식별자인 ddb SK 가 내려옵니다.
   references: [String]
   content: String
   range: String
   date: String!
   profile: Profile
+  likers: [String]
+  viewers: [String]
+  commentCount: Int
+  comments: [Comment]
+}
+
+type Comment {
+  writer: Profile
+  text: String
+  likers: [String]
+  recomments: [Recomment]
+}
+
+type Recomment {
+  replyProfile: Profile
+  writer: Profile
+  text: String
+  likers: [String]
 }
 
 input CreateContemplationInput {
