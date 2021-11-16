@@ -109,3 +109,53 @@ Templates:
     field: exitRoom
     request: "chat/exitRoom-request.vtl"
     response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getContemplations
+    request: "contemplation/getContemplations-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
+    field: getContemplation
+    request: "contemplation/getContemplation-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: likeContemplation
+    request: "contemplation/likeContemplation-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: updateContemplation
+    request: "contemplation/updateContemplation-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: deleteContemplation
+    request: "contemplation/deleteContemplation-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: writeComment
+    request: "contemplation/writeComment-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: likeComment
+    request: "contemplation/likeComment-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: writeRecomment
+    request: "contemplation/writeRecomment-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: deleteRecomment
+    request: "contemplation/deleteRecomment-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Mutation
+    field: likeRecomment
+    request: "contemplation/likeRecomment-request.vtl"
+    response: "common/lambda-response.vtl"
