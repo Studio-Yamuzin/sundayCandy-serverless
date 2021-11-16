@@ -23,6 +23,16 @@ import { createCode } from '@src/onboarding/createCode';
 import { getMyChatRoomInfo } from '@src/chat/getMyChatRoomInfo';
 import { updateRoomSetting } from '@src/chat/updateRoomSetting';
 import { exitRoom } from '@src/chat/exitRoom';
+import { getContemplations } from '@src/contemplation/getContemplations';
+import { getContemplation } from '@src/contemplation/getContemplation';
+import { likeContemplation } from '@src/contemplation/likeContemplation';
+import { writeComment } from '@src/contemplation/writeComment';
+import { deleteContemplation } from '@src/contemplation/deleteContemplation';
+import { likeComment } from '@src/contemplation/likeComment';
+import { writeRecomment } from '@src/contemplation/writeRecomment';
+import { deleteRecomment } from '@src/contemplation/deleteRecomment';
+import { likeRecomment } from '@src/contemplation/likeRecomment';
+import { updateContemplation } from '@src/contemplation/updateContemplation';
 
 export const main: Handler = async (event, context) => {
   console.log(JSON.stringify(context));
@@ -63,6 +73,10 @@ export const main: Handler = async (event, context) => {
         return await createContemplation(event.userId, event.arguments.input);
       case 'getContemplationAll':
         return await getContemplationAll(event.userId);
+      case 'getContemplations':
+        return await getContemplations(event.userId, event.arguments.input);
+      case 'getContemplation':
+        return await getContemplation(event.userId, event.arguments.input);
       case 'createGeneralRoom':
         return await createGeneralRoom(event.userId, event.arguments.input);
       case 'sendMessage':
@@ -85,6 +99,22 @@ export const main: Handler = async (event, context) => {
         return await updateRoomSetting(event.userId, event.arguments.input);
       case 'exitRoom':
         return await exitRoom(event.userId, event.arguments.input);
+      case 'likeContemplation':
+        return await likeContemplation(event.userId, event.arguments.input);
+      case 'updateContemplation':
+        return await updateContemplation(event.userId, event.arguments.input);
+      case 'writeComment':
+        return await writeComment(event.userId, event.arguments.input);
+      case 'likeComment':
+        return await likeComment(event.userId, event.arguments.input);
+      case 'deleteContemplation':
+        return await deleteContemplation(event.userId, event.arguments.input);
+      case 'writeRecomment':
+        return await writeRecomment(event.userId, event.arguments.input);
+      case 'deleteRecomment':
+        return await deleteRecomment(event.userId, event.arguments.input);
+      case 'likeRecomment':
+        return await likeRecomment(event.userId, event.arguments.input);
       default:
         throw new Error('GraphqlQL Fields are not valid');
     }
