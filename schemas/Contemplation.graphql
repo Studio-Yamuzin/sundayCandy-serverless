@@ -4,7 +4,7 @@ type Contemplation {
   content: String
   range: String
   date: String!
-  profile: Profile
+  writer: Profile
   likers: [String]
   viewers: [String]
   commentCount: Int
@@ -31,10 +31,31 @@ input CreateContemplationInput {
   range: String!
 }
 
+input GetContemplationsInput {
+  key: String
+  limit: Int
+}
+
+input GetContemplationInput {
+  id: ID!
+  writer: String!
+}
+
 type Query {
   getContemplationAll: [Contemplation]
+  getContemplations(input: GetContemplationsInput): [Contemplation]
+  getContemplation(input: GetContemplationInput): Contemplation # 상세조회, comment & recomments 모두 포함된 데이터.
+  getMyContemplations: [Contemplation]
 }
 
 type Mutation {
   createContemplation(input: CreateContemplationInput): Contemplation
+  likeContemplation: Contemplation
+  deleteContemplation: Boolean
+  writeComment: Comment
+  likeComment: Comment
+  deleteComment: Boolean
+  writeRecomment: Recomment
+  likeRecomment: Recomment
+  deleteRecomment: Boolean
 }
