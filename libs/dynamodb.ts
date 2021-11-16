@@ -168,6 +168,7 @@ const queryPaginationByBeginsWith = async (
     tableName?: string;
     down?: boolean;
     startKey?: string;
+    index?: string;
   },
 ) => {
   try {
@@ -184,14 +185,17 @@ const queryPaginationByBeginsWith = async (
         SK: option?.startKey ?? '',
       },
       ScanIndexForward: option?.down ?? false,
+      IndexName: option.index ?? '',
     };
+    if (!option.index) {
+      delete params.IndexName;
+    }
     if (!option.startKey) {
       delete params.ExclusiveStartKey;
     }
-    let items;
     const cursor = undefined;
     const paginationParams = decodeCursor(cursor) || params;
-    items = await call('query', params);
+    const items = await call('query', params);
     const paginatedResult = getPaginatedResult<any>(
       paginationParams,
       option.limit,
