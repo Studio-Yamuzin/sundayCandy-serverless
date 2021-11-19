@@ -34,27 +34,37 @@ const call = (action, params) => {
 const queryByKeys = async (
   PK: string,
   SK: string,
-  tableName?: string,
-  indexName?: string,
+  option?: {
+    tableName?: string;
+    indexName?: string;
+  },
 ) => {
-  const result = [];
-  const params: QueryParamsType = {
-    TableName: tableName ?? process.env.tableName,
-    KeyConditionExpression: 'PK = :PK and SK = :SK',
-    ExpressionAttributeValues: {
-      ':PK': PK,
-      ':SK': SK,
-    },
-    ScanIndexForward: false,
-    IndexName: indexName ?? null,
-  };
-  let items;
-  do {
-    items = await call('query', params);
-    items.Items.forEach((item) => result.push(item));
-    params.ExclusiveStartKey = items.LastEvaluatedKey;
-  } while (typeof items.LastEvaluatedKey !== 'undefined');
-  return result;
+  try {
+    const result = [];
+    const params: QueryParamsType = {
+      TableName: option?.tableName ?? process.env.tableName,
+      KeyConditionExpression: 'PK = :PK and SK = :SK',
+      ExpressionAttributeValues: {
+        ':PK': PK,
+        ':SK': SK,
+      },
+      ScanIndexForward: false,
+      IndexName: option?.indexName ?? null,
+    };
+    if (!option?.indexName) {
+      delete params.IndexName;
+    }
+    let items;
+    do {
+      items = await call('query', params);
+      items.Items.forEach((item) => result.push(item));
+      params.ExclusiveStartKey = items.LastEvaluatedKey;
+    } while (typeof items.LastEvaluatedKey !== 'undefined');
+    return result;
+  } catch (error) {
+    console.log('db error : ', error);
+    throw new Error('DB 에러');
+  }
 };
 
 const queryByPK = async (PK: string, tableName?: string) => {
@@ -104,7 +114,7 @@ const queryBySK = async (SK: string, tableName?: string) => {
 const queryByBeginsWith = async (
   PK: string,
   word: string,
-  option?: { tableName?: string; down?: boolean },
+  option?: { tableName?: string; down?: boolean; indexName?: string },
 ) => {
   try {
     const result = [];
@@ -115,8 +125,12 @@ const queryByBeginsWith = async (
         ':PK': PK,
         ':WORD': word,
       },
+      IndexName: option?.indexName ?? '',
       ScanIndexForward: option?.down ?? false,
     };
+    if (!option?.indexName) {
+      delete params.IndexName;
+    }
     let items;
     do {
       items = await call('query', params);
@@ -280,6 +294,7 @@ const updateItemByKeys = async (
       ReturnValues: 'UPDATED_NEW',
     };
     const result = await call('update', params);
+    console.log('update called', result);
     return result;
   } catch (error) {
     console.log(error);
@@ -287,10 +302,7 @@ const updateItemByKeys = async (
   }
 };
 
-const deleteItemByKeys = async (
-  PK: string,
-  SK: string,
-) => {
+const deleteItemByKeys = async (PK: string, SK: string) => {
   try {
     const params = {
       TableName: process.env.tableName,
