@@ -26,9 +26,7 @@ input GetBibleByVerseInput {
 }
 
 input GetBibleByVerseListInput {
-  title: String!
-  chapter: Int!
-  verse: [Int]!
+  keys: [String]
 }
 
 input CreateBookmarkInput {
@@ -49,7 +47,7 @@ input GetMyBookmarkByChapterInput {
 type Query {
   getBibleByChapter(input: GetBibleByChapterInput!): [Bible]
   getBibleByVerse(input: GetBibleByVerseInput!): Bible
-  getBibleByVerseList(input: GetBibleByVerseInput!): [Bible]
+  getBibleByVerseList(input: GetBibleByVerseListInput!): [Bible]
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
   getMyChatRooms: [RoomInfo]
@@ -58,6 +56,9 @@ type Query {
   getRecentMessage(input: GetRecentMessageInput): Message
   getChurch(chuchId: ID!): Church
   getContemplationAll: [Contemplation]
+  getContemplations(input: GetContemplationsInput): [Contemplation]
+  getContemplation(input: GetContemplationInput): Contemplation
+  getMyContemplations: [Contemplation]
   getProfile: Profile
   getChurchUsers: [Profile]
   getUserChurch: UserChurch
@@ -74,6 +75,15 @@ type Mutation {
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
+  likeContemplation(input: LikeContemplationInput): Contemplation
+  deleteContemplation(input: DeleteContemplationInput): Boolean
+  updateContemplation(input: UpdateContemplationInput): Contemplation
+  writeComment(input: WriteCommentInput): Comment
+  likeComment(input: LikeCommentInput): Comment
+  deleteComment(input: DeleteCommentInput): Boolean
+  writeRecomment(input: WriteRecommentInput): Recomment
+  likeRecomment(input: LikeRecommentInput): Recomment
+  deleteRecomment(input: DeleteRecommentInput): Boolean
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
   verifyCode(input: VerifyCodeInput): Profile
@@ -171,18 +181,100 @@ input UpdateChurchInput {
   type: String
 }
 
+enum LikeActionType {
+  activate
+  inactivate
+}
+
 type Contemplation {
+  id: ID!
   references: [String]
   content: String
   range: String
-  date: String!
-  profile: Profile
+  writer: Profile
+  likers: [String]
+  viewers: [String]
+  commentCount: Int
+  comments: [Comment]
+  timeStamp: String
+}
+
+type Comment {
+  writer: Profile
+  text: String
+  likers: [String]
+  recomments: [Recomment]
+  timeStamp: String
+}
+
+type Recomment {
+  replyProfile: Profile
+  writer: Profile
+  text: String
+  likers: [String]
+  timeStamp: String
 }
 
 input CreateContemplationInput {
   references: [String]
   content: String!
   range: String!
+}
+
+input GetContemplationsInput {
+  key: String
+  limit: Int
+}
+
+input GetContemplationInput {
+  id: ID!
+  writer: String!
+}
+
+input LikeContemplationInput {
+  id: ID!
+  writer: String!
+  type: LikeActionType
+}
+
+input DeleteContemplationInput {
+  id: ID!
+}
+
+input UpdateContemplationInput {
+  id: ID!
+  text: String
+}
+
+input WriteCommentInput {
+  contemplationID: ID!
+  text: String!
+}
+
+input WriteRecommentInput {
+  commentID: ID!
+  text: String!
+  target: String!
+}
+
+input LikeCommentInput {
+  contemplationID: ID!
+  commentID: ID!
+}
+
+input LikeRecommentInput {
+  commentID: ID!
+  recommentID: ID!
+}
+
+input DeleteCommentInput {
+  contemplationID: ID!
+  commentID: ID!
+}
+
+input DeleteRecommentInput {
+  commentID: ID!
+  recommentID: ID!
 }
 
 type Profile {

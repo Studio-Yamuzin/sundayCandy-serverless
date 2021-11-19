@@ -26,9 +26,7 @@ input GetBibleByVerseInput {
 }
 
 input GetBibleByVerseListInput {
-  title: String!
-  chapter: Int!
-  verse: [Int]!
+  keys: [String]
 }
 
 input CreateBookmarkInput {
@@ -49,7 +47,7 @@ input GetMyBookmarkByChapterInput {
 type Query {
   getBibleByChapter(input: GetBibleByChapterInput!): [Bible]
   getBibleByVerse(input: GetBibleByVerseInput!): Bible
-  getBibleByVerseList(input: GetBibleByVerseInput!): [Bible]
+  getBibleByVerseList(input: GetBibleByVerseListInput!): [Bible]
   getMyBookmarks: [Bookmark]
   getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
 }

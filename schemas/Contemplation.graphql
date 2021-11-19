@@ -8,12 +8,12 @@ type Contemplation {
   references: [String],
   content: String
   range: String
-  date: String!
   writer: Profile
   likers: [String]
   viewers: [String]
   commentCount: Int
   comments: [Comment]
+  timeStamp: String
 }
 
 type Comment {
@@ -21,6 +21,7 @@ type Comment {
   text: String
   likers: [String]
   recomments: [Recomment]
+  timeStamp: String
 }
 
 type Recomment {
@@ -28,6 +29,7 @@ type Recomment {
   writer: Profile
   text: String
   likers: [String]
+  timeStamp: String
 }
 
 input CreateContemplationInput {
@@ -49,7 +51,6 @@ input GetContemplationInput {
 input LikeContemplationInput {
   id: ID!
   writer: String!
-  type: LikeActionType
 }
 
 input DeleteContemplationInput {
