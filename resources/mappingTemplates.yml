@@ -41,6 +41,11 @@ Templates:
     response: "common/lambda-response.vtl"
   - dataSource: Lambda
     type: Query
+    field: getBibleByVerseList
+    request: "bible/getBibleByVerseList-request.vtl"
+    response: "common/lambda-response.vtl"
+  - dataSource: Lambda
+    type: Query
     field: getMyBookmarkByChapter
     request: "bible/getMyBookmarkByChapter-request.vtl"
     response: "common/lambda-response.vtl"
