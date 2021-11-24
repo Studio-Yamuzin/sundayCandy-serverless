@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum RangeType {
+  public
+  private
+}
+
+enum LevelType {
+  admin
+  user
+}
+
+enum ChatRoomType {
+  community
+  general
+}
+
+enum BoardPresetType {
+  photo
+  inline
+}
+
+model Church {
+  id                 String               @id @default(cuid())
+  name               String               @db.VarChar(20)
+  imageUri           String?
+  type               String               @db.VarChar(30)
+  description        String?              @db.VarChar(100)
+  address            String               @db.VarChar(30)
+  phoneNumber        String?              @db.VarChar(10)
+  users              User[]
+  AuthenticationCode AuthenticationCode[]
+  createdAt          DateTime             @default(now())
+}
+
+model AuthenticationCode {
+  id           String   @id @default(cuid())
+  verifyNumber String   @db.VarChar(6)
+  churchId     String
+  church       Church   @relation(fields: [churchId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+model User {
+  id              String            @id
+  churchId        String
+  pushToken       String?
+  photo           String?
+  birthDay        String?
+  position        String?
+  name            String?           @db.VarChar(20)
+  phoneNumber     String?           @db.VarChar(20)
+  updatedAt       DateTime          @default(now()) @updatedAt
+  createdAt       DateTime          @default(now())
+  church          Church            @relation(fields: [churchId], references: [id])
+  level           LevelType?
+  communityStatus CommunityStatus[]
+  ChatConnection  ChatConnection[]
+  Contemplation   Contemplation[]
+  Comment         Comment[]
+  Bookmark        Bookmark[]
+  Like            Like[]
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  chapter   Int
+  title     String   @db.VarChar(20)
+  createdAt DateTime @default(now())
+}
+
+model CommunityStatus {
+  id          String    @id @default(cuid())
+  communityId String
+  userId      String
+  community   Community @relation(fields: [communityId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Community {
+  id              String            @id @default(cuid())
+  name            String
+  CommunityStatus CommunityStatus[]
+  Board           Board[]
+  createdAt       DateTime          @default(now())
+}
+
+model ChatConnection {
+  id         String   @id @default(cuid())
+  userId     String
+  chatRoomId String
+  name       String?
+  user       User     @relation(fields: [userId], references: [id])
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model ChatRoom {
+  id             String           @id @default(cuid()) // using dynamodb Messsage Key
+  ChatConnection ChatConnection[]
+  type           ChatRoomType
+  createdAt      DateTime         @default(now())
+}
+
+model ContemplationReference {
+  id              String         @id @default(cuid())
+  key             String
+  Contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  contemplationId String?
+}
+
+model Contemplation {
+  id         String                   @id @default(cuid())
+  writerId   String
+  content    String                   @db.VarChar(200)
+  viewer     Int                      @default(0)
+  range      RangeType
+  references ContemplationReference[]
+  writer     User                     @relation(fields: [writerId], references: [id])
+  comments   Comment[]
+  likes      Like[]
+  createdAt  DateTime                 @default(now())
+}
+
+model Comment {
+  id              String         @id @default(cuid())
+  parentId        String?
+  parent          Comment?       @relation("Recomment", fields: [parentId], references: [id])
+  recomments      Comment[]      @relation("Recomment")
+  text            String
+  writerId        String
+  writer          User           @relation(fields: [writerId], references: [id])
+  contemplationId String?
+  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  postId          String?
+  post            Post?          @relation(fields: [postId], references: [id])
+  likes           Like[]
+  createdAt       DateTime       @default(now())
+}
+
+model Like {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  boardId         String?
+  board           Board?         @relation(fields: [boardId], references: [id])
+  contemplationId String?
+  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  commentId       String?
+  comment         Comment?       @relation(fields: [commentId], references: [id])
+  createdAt       DateTime       @default(now())
+}
+
+model BoardPreset {
+  id        String          @id @default(cuid())
+  name      BoardPresetType
+  Board     Board[]
+  createdAt DateTime        @default(now())
+}
+
+model Board {
+  id            String      @id @default(cuid())
+  name          String
+  boardPresetId String
+  boardPreset   BoardPreset @relation(fields: [boardPresetId], references: [id])
+  communityId   String
+  community     Community   @relation(fields: [communityId], references: [id])
+  posts         Post[]
+  Like          Like[]
+  createdAt     DateTime    @default(now())
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  photo     Photo[]
+  boardId   String
+  board     Board     @relation(fields: [boardId], references: [id])
+  comment   Comment[]
+  createdAt DateTime  @default(now())
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  postId    String?
+  Post      Post?    @relation(fields: [postId], references: [id])
+  uri       String
+  createdAt DateTime @default(now())
+}
