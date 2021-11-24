@@ -9,6 +9,7 @@ type Bible {
 }
 
 type Bookmark {
+  id: String
   title: String
   chapter: Int
   date: String
@@ -35,8 +36,7 @@ input CreateBookmarkInput {
 }
 
 input DeleteBookmarkInput {
-  title: String!
-  chapter: Int!
+  id: ID!
 }
 
 input GetMyBookmarkByChapterInput {

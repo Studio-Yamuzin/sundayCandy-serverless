@@ -9,6 +9,7 @@ type Bible {
 }
 
 type Bookmark {
+  id: String
   title: String
   chapter: Int
   date: String
@@ -35,8 +36,7 @@ input CreateBookmarkInput {
 }
 
 input DeleteBookmarkInput {
-  title: String!
-  chapter: Int!
+  id: ID!
 }
 
 input GetMyBookmarkByChapterInput {
@@ -76,18 +76,16 @@ type Mutation {
   updateChurch(input: UpdateChurchInput): Church
   createContemplation(input: CreateContemplationInput): Contemplation
   likeContemplation(input: LikeContemplationInput): Contemplation
-  deleteContemplation(input: DeleteContemplationInput): Boolean
+  deleteContemplation(input: DeleteContemplationInput): Contemplation
   updateContemplation(input: UpdateContemplationInput): Contemplation
   writeComment(input: WriteCommentInput): Comment
   likeComment(input: LikeCommentInput): Comment
   deleteComment(input: DeleteCommentInput): Boolean
-  writeRecomment(input: WriteRecommentInput): Recomment
-  likeRecomment(input: LikeRecommentInput): Recomment
-  deleteRecomment(input: DeleteRecommentInput): Boolean
+  writeRecomment(input: WriteRecommentInput): Comment
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
   verifyCode(input: VerifyCodeInput): Profile
-  createCode(input: CreateCodeInput): Code
+  createCode: Code
 }
 
 type RoomInfo {
@@ -181,16 +179,22 @@ input UpdateChurchInput {
   type: String
 }
 
-enum LikeActionType {
-  activate
-  inactivate
+enum LikeType {
+  board
+  contemplation
+  comment
+}
+
+enum RangeType {
+  public
+  private
 }
 
 type Contemplation {
   id: ID!
   references: [String]
   content: String
-  range: String
+  range: RangeType
   writer: Profile
   likers: [String]
   viewers: [String]
@@ -203,22 +207,14 @@ type Comment {
   writer: Profile
   text: String
   likers: [String]
-  recomments: [Recomment]
-  timeStamp: String
-}
-
-type Recomment {
-  replyProfile: Profile
-  writer: Profile
-  text: String
-  likers: [String]
+  recomments: [Comment]
   timeStamp: String
 }
 
 input CreateContemplationInput {
   references: [String]
   content: String!
-  range: String!
+  range: RangeType!
 }
 
 input GetContemplationsInput {
@@ -228,13 +224,10 @@ input GetContemplationsInput {
 
 input GetContemplationInput {
   id: ID!
-  writer: String!
 }
 
 input LikeContemplationInput {
   id: ID!
-  writer: String!
-  type: LikeActionType
 }
 
 input DeleteContemplationInput {
@@ -252,39 +245,43 @@ input WriteCommentInput {
 }
 
 input WriteRecommentInput {
-  commentID: ID!
+  commentId: ID!
   text: String!
-  target: String!
+  parent: String!
 }
 
 input LikeCommentInput {
-  contemplationID: ID!
-  commentID: ID!
-}
-
-input LikeRecommentInput {
-  commentID: ID!
-  recommentID: ID!
+  id: ID!
 }
 
 input DeleteCommentInput {
-  contemplationID: ID!
-  commentID: ID!
+  id: ID!
 }
 
-input DeleteRecommentInput {
-  commentID: ID!
-  recommentID: ID!
+input DeleteLikeInput {
+  id: ID!
+}
+
+enum LevelType {
+  first
+  second
+  third
+}
+
+enum OnboardingStep {
+  first
+  second
+  done
 }
 
 type Profile {
-  PK: String
+  id: String
   name: String
   phoneNumber: String
   photo: String
   birthDay: String
   position: String
-  church: String!
+  church: Church
   level: String
 }
 
@@ -295,7 +292,6 @@ type UserChurch {
 type Code {
   id: ID!
   verifyNumber: String!
-  level: String!
   createdAt: String!
 }
 
@@ -320,15 +316,7 @@ input GetProfilesInput {
 }
 
 input VerifyCodeInput {
-  verifyNumber: Int
-}
-
-input CreateCodeInput {
-  level: String
-}
-
-type OnboardingStep {
-  step: String
+  verifyNumber: String
 }
 
 schema {

@@ -1,11 +1,23 @@
+enum LevelType {
+  first
+  second
+  third
+}
+
+enum OnboardingStep {
+  first # OAuth 인증도 안 한 상태
+  second # 코드 인증만 된 상태(일반 신도) , 교회만 생성한 상태(관리자)
+  done # 모든 정보가 유효한 유저
+}
+
 type Profile {
-  PK: String
+  id: String
   name: String
   phoneNumber: String
   photo: String
   birthDay: String
   position: String
-  church: String!
+  church: Church
   level: String
 }
 
@@ -17,7 +29,6 @@ type UserChurch {
 type Code {
   id: ID!
   verifyNumber: String!
-  level: String!
   createdAt: String!
 }
 
@@ -42,20 +53,12 @@ input GetProfilesInput {
 }
 
 input VerifyCodeInput {
-  verifyNumber: Int
-}
-
-input CreateCodeInput {
-  level: String
-}
-
-type OnboardingStep {
-  step: String
+  verifyNumber: String
 }
 
 type Query {
   getProfile: Profile
-  getChurchUsers: [Profile] 
+  getChurchUsers: [Profile]
   getUserChurch: UserChurch
   getOnboardingStep: OnboardingStep
 }
@@ -64,5 +67,5 @@ type Mutation {
   createProfile(input: CreateUserIput): Profile
   updateProfile(input: UpdateUserInfo): Profile
   verifyCode(input: VerifyCodeInput): Profile
-  createCode(input: CreateCodeInput): Code
+  createCode: Code
 }

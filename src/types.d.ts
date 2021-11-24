@@ -26,6 +26,7 @@ export type Bookmark = {
   __typename?: 'Bookmark';
   chapter?: Maybe<Scalars['Int']>;
   date?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
 };
 
@@ -43,14 +44,13 @@ export type Code = {
   __typename?: 'Code';
   createdAt: Scalars['String'];
   id: Scalars['ID'];
-  level: Scalars['String'];
   verifyNumber: Scalars['String'];
 };
 
 export type Comment = {
   __typename?: 'Comment';
   likers?: Maybe<Array<Maybe<Scalars['String']>>>;
-  recomments?: Maybe<Array<Maybe<Recomment>>>;
+  recomments?: Maybe<Array<Maybe<Comment>>>;
   text?: Maybe<Scalars['String']>;
   timeStamp?: Maybe<Scalars['String']>;
   writer?: Maybe<Profile>;
@@ -63,7 +63,7 @@ export type Contemplation = {
   content?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   likers?: Maybe<Array<Maybe<Scalars['String']>>>;
-  range?: Maybe<Scalars['String']>;
+  range?: Maybe<RangeType>;
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
   timeStamp?: Maybe<Scalars['String']>;
   viewers?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -84,13 +84,9 @@ export type CreateChurchInput = {
   type?: Maybe<Scalars['String']>;
 };
 
-export type CreateCodeInput = {
-  level?: Maybe<Scalars['String']>;
-};
-
 export type CreateContemplationInput = {
   content: Scalars['String'];
-  range: Scalars['String'];
+  range: RangeType;
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -110,22 +106,19 @@ export type CreateUserIput = {
 };
 
 export type DeleteBookmarkInput = {
-  chapter: Scalars['Int'];
-  title: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 export type DeleteCommentInput = {
-  commentID: Scalars['ID'];
-  contemplationID: Scalars['ID'];
+  id: Scalars['ID'];
 };
 
 export type DeleteContemplationInput = {
   id: Scalars['ID'];
 };
 
-export type DeleteRecommentInput = {
-  commentID: Scalars['ID'];
-  recommentID: Scalars['ID'];
+export type DeleteLikeInput = {
+  id: Scalars['ID'];
 };
 
 export type ExitRoomInput = {
@@ -149,7 +142,6 @@ export type GetBibleByVerseListInput = {
 
 export type GetContemplationInput = {
   id: Scalars['ID'];
-  writer: Scalars['String'];
 };
 
 export type GetContemplationsInput = {
@@ -180,26 +172,23 @@ export type GetRoomMessagesInput = {
   roomId: Scalars['String'];
 };
 
-export enum LikeActionType {
-  Activate = 'activate',
-  Inactivate = 'inactivate'
-}
+export type LevelType =
+  | 'first'
+  | 'second'
+  | 'third';
 
 export type LikeCommentInput = {
-  commentID: Scalars['ID'];
-  contemplationID: Scalars['ID'];
+  id: Scalars['ID'];
 };
 
 export type LikeContemplationInput = {
   id: Scalars['ID'];
-  type?: Maybe<LikeActionType>;
-  writer: Scalars['String'];
 };
 
-export type LikeRecommentInput = {
-  commentID: Scalars['ID'];
-  recommentID: Scalars['ID'];
-};
+export type LikeType =
+  | 'board'
+  | 'comment'
+  | 'contemplation';
 
 export type Message = {
   __typename?: 'Message';
@@ -222,12 +211,10 @@ export type Mutation = {
   createProfile?: Maybe<Profile>;
   deleteBookmark?: Maybe<Bookmark>;
   deleteComment?: Maybe<Scalars['Boolean']>;
-  deleteContemplation?: Maybe<Scalars['Boolean']>;
-  deleteRecomment?: Maybe<Scalars['Boolean']>;
+  deleteContemplation?: Maybe<Contemplation>;
   exitRoom?: Maybe<Array<Maybe<RoomInfo>>>;
   likeComment?: Maybe<Comment>;
   likeContemplation?: Maybe<Contemplation>;
-  likeRecomment?: Maybe<Recomment>;
   sendMessage?: Maybe<Message>;
   updateChurch?: Maybe<Church>;
   updateContemplation?: Maybe<Contemplation>;
@@ -235,7 +222,7 @@ export type Mutation = {
   updateRoomSetting?: Maybe<RoomInfo>;
   verifyCode?: Maybe<Profile>;
   writeComment?: Maybe<Comment>;
-  writeRecomment?: Maybe<Recomment>;
+  writeRecomment?: Maybe<Comment>;
 };
 
 
@@ -246,11 +233,6 @@ export type MutationCreateBookmarkArgs = {
 
 export type MutationCreateChurchArgs = {
   input?: Maybe<CreateChurchInput>;
-};
-
-
-export type MutationCreateCodeArgs = {
-  input?: Maybe<CreateCodeInput>;
 };
 
 
@@ -284,11 +266,6 @@ export type MutationDeleteContemplationArgs = {
 };
 
 
-export type MutationDeleteRecommentArgs = {
-  input?: Maybe<DeleteRecommentInput>;
-};
-
-
 export type MutationExitRoomArgs = {
   input?: Maybe<ExitRoomInput>;
 };
@@ -301,11 +278,6 @@ export type MutationLikeCommentArgs = {
 
 export type MutationLikeContemplationArgs = {
   input?: Maybe<LikeContemplationInput>;
-};
-
-
-export type MutationLikeRecommentArgs = {
-  input?: Maybe<LikeRecommentInput>;
 };
 
 
@@ -349,10 +321,10 @@ export type MutationWriteRecommentArgs = {
   input?: Maybe<WriteRecommentInput>;
 };
 
-export type OnboardingStep = {
-  __typename?: 'OnboardingStep';
-  step?: Maybe<Scalars['String']>;
-};
+export type OnboardingStep =
+  | 'done'
+  | 'first'
+  | 'second';
 
 export type PaginatedMessages = {
   __typename?: 'PaginatedMessages';
@@ -362,9 +334,9 @@ export type PaginatedMessages = {
 
 export type Profile = {
   __typename?: 'Profile';
-  PK?: Maybe<Scalars['String']>;
   birthDay?: Maybe<Scalars['String']>;
-  church: Scalars['String'];
+  church?: Maybe<Church>;
+  id?: Maybe<Scalars['String']>;
   level?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
@@ -444,14 +416,9 @@ export type QueryGetRoomMessagesArgs = {
   input?: Maybe<GetRoomMessagesInput>;
 };
 
-export type Recomment = {
-  __typename?: 'Recomment';
-  likers?: Maybe<Array<Maybe<Scalars['String']>>>;
-  replyProfile?: Maybe<Profile>;
-  text?: Maybe<Scalars['String']>;
-  timeStamp?: Maybe<Scalars['String']>;
-  writer?: Maybe<Profile>;
-};
+export type RangeType =
+  | 'private'
+  | 'public';
 
 export type RoomInfo = {
   __typename?: 'RoomInfo';
@@ -512,7 +479,7 @@ export type UserChurch = {
 };
 
 export type VerifyCodeInput = {
-  verifyNumber?: Maybe<Scalars['Int']>;
+  verifyNumber?: Maybe<Scalars['String']>;
 };
 
 export type WriteCommentInput = {
@@ -521,7 +488,7 @@ export type WriteCommentInput = {
 };
 
 export type WriteRecommentInput = {
-  commentID: Scalars['ID'];
-  target: Scalars['String'];
+  commentId: Scalars['ID'];
+  parent: Scalars['String'];
   text: Scalars['String'];
 };
