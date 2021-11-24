@@ -4,3 +4,6 @@ generates:
   ./src/types.d.ts:
     plugins:
       - typescript
+    config:
+      constEnums: true
+      enumsAsTypes: true
