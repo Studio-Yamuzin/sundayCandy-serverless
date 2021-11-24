@@ -8,7 +8,9 @@
     "generate": "graphql-codegen",
     "generate-schema": "ts-node mergeSchemas.ts && yarn generate",
     "deploy": "ts-node mergeSchemas.ts && sls deploy",
-    "mapping-bible": "cd src/modules && ts-node mappingBible"
+    "mapping-bible": "cd src/modules && ts-node mappingBible",
+    "prisma:introspect": "prisma introspect",
+    "prisma:generate": "prisma generate"
   },
   "author": "",
   "license": "MIT",
@@ -19,6 +21,11 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^2.2.0",
     "@graphql-codegen/typescript": "^2.2.2",
+    "@graphql-tools/graphql-file-loader": "^7.1.0",
+    "@graphql-tools/load": "^7.3.0",
+    "@graphql-tools/load-files": "^6.4.0",
+    "@graphql-tools/merge": "^8.1.2",
+    "@graphql-tools/schema": "^8.2.0",
     "@types/aws-lambda": "^8.10.83",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
@@ -26,6 +33,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
     "prettier": "^2.4.1",
+    "prisma": "^3.5.0",
     "serverless-bundle": "4.3.1",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-offline": "^5.3.3",
@@ -33,11 +41,7 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "@graphql-tools/graphql-file-loader": "^7.1.0",
-    "@graphql-tools/load": "^7.3.0",
-    "@graphql-tools/load-files": "^6.4.0",
-    "@graphql-tools/merge": "^8.1.2",
-    "@graphql-tools/schema": "^8.2.0",
+    "@prisma/client": "^3.5.0",
     "@types/moment": "^2.13.0",
     "@types/uuid": "^8.3.1",
     "apollo-server-lambda": "^3.3.0",
