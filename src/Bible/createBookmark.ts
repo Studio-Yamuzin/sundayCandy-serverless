@@ -1,22 +1,28 @@
-import { Bookmark, CreateBookmarkInput } from "@src/types";
-import { dynamodb } from "libs/dynamodb";
+import { Bookmark, CreateBookmarkInput } from '@src/types';
+import { PrismaClient } from '.prisma/client';
 
-export const createBookmark = async(userId: string, {chapter, title}: CreateBookmarkInput): Promise<Bookmark> => {
-  try{
-    const createdAt = new Date().toISOString();
-    await dynamodb.putItem({
-      PK: userId,
-      SK: `bookmark-${title}-${chapter}`,
-      title: title,
-      chapter: chapter,
-      createdAt: createdAt,
+const prisma = new PrismaClient();
+
+export const createBookmark = async (
+  userId: string,
+  { chapter, title }: CreateBookmarkInput,
+): Promise<Bookmark> => {
+  try {
+    const createBookmarkResult = await prisma.bookmark.create({
+      data: {
+        userId,
+        chapter,
+        title,
+      },
     });
+
     return {
-      title: title,
-      chapter: chapter,
-      date: createdAt,
-    }
-  }catch(error){
-    throw new Error("책갈피 생성에 실패했어요.\n다시 시도해주세요.")
+      id: createBookmarkResult.id,
+      title: createBookmarkResult.title,
+      chapter: createBookmarkResult.chapter,
+      date: createBookmarkResult.createdAt.toUTCString(),
+    };
+  } catch (error) {
+    throw new Error('책갈피 생성에 실패했어요.\n다시 시도해주세요.');
   }
-}
+};

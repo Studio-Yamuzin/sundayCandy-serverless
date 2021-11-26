@@ -1,19 +1,25 @@
-import { Bookmark, DeleteBookmarkInput } from "@src/types";
-import { dynamodb } from "libs/dynamodb";
+import { Bookmark, DeleteBookmarkInput } from '@src/types';
+import { PrismaClient } from '.prisma/client';
 
-export const deleteBookmark = async(userId: string, {title, chapter}: DeleteBookmarkInput): Promise<Bookmark> => {
-  try{
-    const params = {
-      TableName: process.env.tableName,
-      Key: {PK:userId , SK:`bookmark-${title}-${chapter}`},
-    };
-    const deleteBookmarkResult = await dynamodb.delete(params);
+const prisma = new PrismaClient();
+
+export const deleteBookmark = async (
+  userId: string,
+  { id }: DeleteBookmarkInput,
+): Promise<Bookmark> => {
+  try {
+    const deleteResult = await prisma.bookmark.delete({
+      where: {
+        id,
+      },
+    });
     return {
-      title,
-      chapter,
-      date: new Date().toISOString(),
+      id: deleteResult.id,
+      title: deleteResult.title,
+      chapter: deleteResult.chapter,
+      date: deleteResult.createdAt.toISOString(),
     };
-  }catch(error){
-    throw new Error("책갈피 삭제 실패.");
+  } catch (error) {
+    throw new Error('책갈피 삭제 실패.');
   }
-}
+};

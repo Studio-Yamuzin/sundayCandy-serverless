@@ -1,6 +1,6 @@
 {
   "name": "sundayCandy-serverless",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A Node.js starter for Serverless Framework with ES6 and TypeScript support",
   "main": "handler.js",
   "scripts": {
@@ -33,7 +33,6 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
     "prettier": "^2.4.1",
-    "prisma": "^3.5.0",
     "serverless-bundle": "4.3.1",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-offline": "^5.3.3",
@@ -41,16 +40,18 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "@prisma/client": "^3.5.0",
+    "@prisma/client": "^3.0.2",
     "@types/moment": "^2.13.0",
     "@types/uuid": "^8.3.1",
-    "apollo-server-lambda": "^3.3.0",
+    "apollo-server-lambda": "^3.5.0",
     "aws-sdk": "^2.980.0",
     "axios": "^0.21.1",
     "dynamodb-paginator": "^2.1.0",
     "graphql": "^15.5.3",
+    "graphql-playground-middleware-lambda": "^1.7.24",
     "graphql-tools": "^8.2.0",
     "moment": "^2.29.1",
+    "prisma": "^3.5.0",
     "serverless-appsync-plugin": "^1.12.0",
     "serverless-webpack": "^5.5.3",
     "time-uuid": "^1.0.0",
