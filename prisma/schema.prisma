@@ -1,10 +1,224 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "darwin"]
 }
+// darwin for localhost test
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Church {
+  id                 String               @id @default(cuid())
+  name               String               @db.VarChar(20)
+  imageUri           String?
+  type               String               @db.VarChar(30)
+  description        String?              @db.VarChar(100)
+  address            String               @db.VarChar(30)
+  phoneNumber        String?              @db.VarChar(10)
+  createdAt          DateTime             @default(now())
+  AuthenticationCode AuthenticationCode[]
+  contemplations     Contemplation[]
+  users              User[]
+}
+
+model AuthenticationCode {
+  id           String   @id @default(cuid())
+  verifyNumber String   @db.VarChar(6)
+  churchId     String
+  createdAt    DateTime @default(now())
+  church       Church   @relation(fields: [churchId], references: [id])
+
+  @@index([churchId], map: "AuthenticationCode_churchId_fkey")
+}
+
+model User {
+  id              String            @id
+  name            String?           @db.VarChar(20)
+  updatedAt       DateTime          @default(now()) @updatedAt
+  createdAt       DateTime          @default(now())
+  churchId        String
+  level           LevelType?
+  pushToken       String?
+  position        String?
+  phoneNumber     String?           @db.VarChar(20)
+  birthDay        String?
+  photo           String?
+  church          Church            @relation(fields: [churchId], references: [id])
+  Bookmark        Bookmark[]
+  ChatConnection  ChatConnection[]
+  Comment         Comment[]
+  communityStatus CommunityStatus[]
+  Contemplation   Contemplation[]
+  Like            Like[]
+  ChatRoom        ChatRoom[]
+
+  @@index([churchId], map: "User_churchId_fkey")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+  chapter   Int
+  title     String   @db.VarChar(20)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Bookmark_userId_fkey")
+}
+
+model CommunityStatus {
+  id          String    @id @default(cuid())
+  communityId String
+  userId      String
+  createdAt   DateTime  @default(now())
+  community   Community @relation(fields: [communityId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([communityId], map: "CommunityStatus_communityId_fkey")
+  @@index([userId], map: "CommunityStatus_userId_fkey")
+}
+
+model Community {
+  id              String            @id @default(cuid())
+  name            String
+  createdAt       DateTime          @default(now())
+  Board           Board[]
+  CommunityStatus CommunityStatus[]
+}
+
+model ChatConnection {
+  userId            String
+  chatRoomId        String
+  name              String?
+  createdAt         DateTime @default(now())
+  lastReadMessageId String?
+  photoUri          String?
+  chatRoom          ChatRoom @relation(fields: [chatRoomId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@id([chatRoomId, userId])
+  @@index([userId], map: "ChatConnection_userId_fkey")
+}
+
+model ChatRoom {
+  id              String           @id @default(cuid())
+  type            ChatRoomType
+  createdAt       DateTime         @default(now())
+  lastMessageId   String?
+  chatConnections ChatConnection[]
+  user            User[]
+}
+
+model ContemplationReference {
+  id              String         @id @default(cuid())
+  key             String
+  contemplationId String?
+  Contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+
+  @@index([contemplationId], map: "ContemplationReference_contemplationId_fkey")
+}
+
+model Contemplation {
+  id         String                   @id @default(cuid())
+  writerId   String
+  createdAt  DateTime                 @default(now())
+  content    String                   @db.VarChar(200)
+  range      RangeType
+  viewer     Int                      @default(0)
+  churchId   String?
+  church     Church?                  @relation(fields: [churchId], references: [id])
+  writer     User                     @relation(fields: [writerId], references: [id])
+  comments   Comment[]
+  references ContemplationReference[]
+  likes      Like[]
+
+  @@index([churchId], map: "Contemplation_churchId_fkey")
+  @@index([writerId], map: "Contemplation_writerId_fkey")
+}
+
+model Comment {
+  id              String         @id @default(cuid())
+  text            String
+  writerId        String
+  contemplationId String?
+  postId          String?
+  createdAt       DateTime       @default(now())
+  parentId        String?
+  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  parent          Comment?       @relation("Recomment", fields: [parentId], references: [id])
+  post            Post?          @relation(fields: [postId], references: [id])
+  writer          User           @relation(fields: [writerId], references: [id])
+  recomments      Comment[]      @relation("Recomment")
+  likes           Like[]
+
+  @@index([contemplationId], map: "Comment_contemplationId_fkey")
+  @@index([parentId], map: "Comment_parentId_fkey")
+  @@index([postId], map: "Comment_postId_fkey")
+  @@index([writerId], map: "Comment_writerId_fkey")
+}
+
+model Like {
+  id              String         @id @default(cuid())
+  userId          String
+  boardId         String?
+  commentId       String?
+  createdAt       DateTime       @default(now())
+  contemplationId String?
+  board           Board?         @relation(fields: [boardId], references: [id])
+  comment         Comment?       @relation(fields: [commentId], references: [id])
+  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
+
+  @@index([boardId], map: "Like_boardId_fkey")
+  @@index([commentId], map: "Like_commentId_fkey")
+  @@index([contemplationId], map: "Like_contemplationId_fkey")
+  @@index([userId], map: "Like_userId_fkey")
+}
+
+model BoardPreset {
+  id        String          @id @default(cuid())
+  name      BoardPresetType
+  createdAt DateTime        @default(now())
+  Board     Board[]
+}
+
+model Board {
+  id            String      @id @default(cuid())
+  name          String
+  boardPresetId String
+  communityId   String
+  createdAt     DateTime    @default(now())
+  boardPreset   BoardPreset @relation(fields: [boardPresetId], references: [id])
+  community     Community   @relation(fields: [communityId], references: [id])
+  Like          Like[]
+  posts         Post[]
+
+  @@index([boardPresetId], map: "Board_boardPresetId_fkey")
+  @@index([communityId], map: "Board_communityId_fkey")
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  boardId   String
+  createdAt DateTime  @default(now())
+  board     Board     @relation(fields: [boardId], references: [id])
+  comment   Comment[]
+  photo     Photo[]
+
+  @@index([boardId], map: "Post_boardId_fkey")
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  postId    String?
+  uri       String
+  createdAt DateTime @default(now())
+  Post      Post?    @relation(fields: [postId], references: [id])
+
+  @@index([postId], map: "Photo_postId_fkey")
 }
 
 enum RangeType {
@@ -25,175 +239,4 @@ enum ChatRoomType {
 enum BoardPresetType {
   photo
   inline
-}
-
-model Church {
-  id                 String               @id @default(cuid())
-  name               String               @db.VarChar(20)
-  imageUri           String?
-  type               String               @db.VarChar(30)
-  description        String?              @db.VarChar(100)
-  address            String               @db.VarChar(30)
-  phoneNumber        String?              @db.VarChar(10)
-  users              User[]
-  AuthenticationCode AuthenticationCode[]
-  createdAt          DateTime             @default(now())
-}
-
-model AuthenticationCode {
-  id           String   @id @default(cuid())
-  verifyNumber String   @db.VarChar(6)
-  churchId     String
-  church       Church   @relation(fields: [churchId], references: [id])
-  createdAt    DateTime @default(now())
-}
-
-model User {
-  id              String            @id
-  churchId        String
-  pushToken       String?
-  photo           String?
-  birthDay        String?
-  position        String?
-  name            String?           @db.VarChar(20)
-  phoneNumber     String?           @db.VarChar(20)
-  updatedAt       DateTime          @default(now()) @updatedAt
-  createdAt       DateTime          @default(now())
-  church          Church            @relation(fields: [churchId], references: [id])
-  level           LevelType?
-  communityStatus CommunityStatus[]
-  ChatConnection  ChatConnection[]
-  Contemplation   Contemplation[]
-  Comment         Comment[]
-  Bookmark        Bookmark[]
-  Like            Like[]
-}
-
-model Bookmark {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  chapter   Int
-  title     String   @db.VarChar(20)
-  createdAt DateTime @default(now())
-}
-
-model CommunityStatus {
-  id          String    @id @default(cuid())
-  communityId String
-  userId      String
-  community   Community @relation(fields: [communityId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
-  createdAt   DateTime  @default(now())
-}
-
-model Community {
-  id              String            @id @default(cuid())
-  name            String
-  CommunityStatus CommunityStatus[]
-  Board           Board[]
-  createdAt       DateTime          @default(now())
-}
-
-model ChatConnection {
-  id         String   @id @default(cuid())
-  userId     String
-  chatRoomId String
-  name       String?
-  user       User     @relation(fields: [userId], references: [id])
-  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
-  createdAt  DateTime @default(now())
-}
-
-model ChatRoom {
-  id             String           @id @default(cuid()) // using dynamodb Messsage Key
-  ChatConnection ChatConnection[]
-  type           ChatRoomType
-  createdAt      DateTime         @default(now())
-}
-
-model ContemplationReference {
-  id              String         @id @default(cuid())
-  key             String
-  Contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
-  contemplationId String?
-}
-
-model Contemplation {
-  id         String                   @id @default(cuid())
-  writerId   String
-  content    String                   @db.VarChar(200)
-  viewer     Int                      @default(0)
-  range      RangeType
-  references ContemplationReference[]
-  writer     User                     @relation(fields: [writerId], references: [id])
-  comments   Comment[]
-  likes      Like[]
-  createdAt  DateTime                 @default(now())
-}
-
-model Comment {
-  id              String         @id @default(cuid())
-  parentId        String?
-  parent          Comment?       @relation("Recomment", fields: [parentId], references: [id])
-  recomments      Comment[]      @relation("Recomment")
-  text            String
-  writerId        String
-  writer          User           @relation(fields: [writerId], references: [id])
-  contemplationId String?
-  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
-  postId          String?
-  post            Post?          @relation(fields: [postId], references: [id])
-  likes           Like[]
-  createdAt       DateTime       @default(now())
-}
-
-model Like {
-  id              String         @id @default(cuid())
-  userId          String
-  user            User           @relation(fields: [userId], references: [id])
-  boardId         String?
-  board           Board?         @relation(fields: [boardId], references: [id])
-  contemplationId String?
-  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
-  commentId       String?
-  comment         Comment?       @relation(fields: [commentId], references: [id])
-  createdAt       DateTime       @default(now())
-}
-
-model BoardPreset {
-  id        String          @id @default(cuid())
-  name      BoardPresetType
-  Board     Board[]
-  createdAt DateTime        @default(now())
-}
-
-model Board {
-  id            String      @id @default(cuid())
-  name          String
-  boardPresetId String
-  boardPreset   BoardPreset @relation(fields: [boardPresetId], references: [id])
-  communityId   String
-  community     Community   @relation(fields: [communityId], references: [id])
-  posts         Post[]
-  Like          Like[]
-  createdAt     DateTime    @default(now())
-}
-
-model Post {
-  id        String    @id @default(cuid())
-  title     String
-  photo     Photo[]
-  boardId   String
-  board     Board     @relation(fields: [boardId], references: [id])
-  comment   Comment[]
-  createdAt DateTime  @default(now())
-}
-
-model Photo {
-  id        String   @id @default(cuid())
-  postId    String?
-  Post      Post?    @relation(fields: [postId], references: [id])
-  uri       String
-  createdAt DateTime @default(now())
 }
