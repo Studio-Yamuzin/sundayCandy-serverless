@@ -1,4 +1,4 @@
-type Bible {
+export const schema = `type Bible {
   PK: ID!
   SK: ID!
   title: String!
@@ -344,3 +344,4 @@ schema {
   mutation: Mutation
   subscription: Subscription
 }
+`

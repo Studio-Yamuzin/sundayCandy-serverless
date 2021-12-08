@@ -16,13 +16,14 @@ type Contemplation {
   range: RangeType
   writer: Profile
   likers: [String]
-  viewers: [String]
+  viewerCount: Int
   commentCount: Int
   comments: [Comment]
   timeStamp: String
 }
 
 type Comment {
+  id: ID!
   writer: Profile
   text: String
   likers: [String]
@@ -46,7 +47,7 @@ input GetContemplationInput {
 }
 
 input LikeContemplationInput {
-  id: ID!
+  id: ID! # contemplation
 }
 
 input DeleteContemplationInput {
@@ -66,7 +67,6 @@ input WriteCommentInput {
 input WriteRecommentInput {
   commentId: ID!
   text: String!
-  parent: String!
 }
 
 input LikeCommentInput {
@@ -81,20 +81,29 @@ input DeleteLikeInput {
   id: ID!
 }
 
+input ContemplationCommentsInput {
+  id: ID! # contemplation id
+}
+
+input UpdateContemplationViewerInput {
+  id: ID! #contemplation id
+}
+
 type Query {
-  getContemplationAll: [Contemplation]
-  getContemplations(input: GetContemplationsInput): [Contemplation]
-  getContemplation(input: GetContemplationInput): Contemplation # 상세조회, comment & recomments 모두 포함된 데이터.
-  getMyContemplations: [Contemplation]
+  contemplations(input: GetContemplationsInput): [Contemplation]
+  contemplation(input: GetContemplationInput): Contemplation # 상세조회, comment & recomments 모두 포함된 데이터.
+  myContemplations: [Contemplation]
+  contemplationComments(input: ContemplationCommentsInput): [Comment]
 }
 
 type Mutation {
   createContemplation(input: CreateContemplationInput): Contemplation
-  likeContemplation(input: LikeContemplationInput): Contemplation
+  likeContemplation(input: LikeContemplationInput): [String]
   deleteContemplation(input: DeleteContemplationInput): Contemplation
   updateContemplation(input: UpdateContemplationInput): Contemplation
   writeComment(input: WriteCommentInput): Comment
-  likeComment(input: LikeCommentInput): Comment
+  likeComment(input: LikeCommentInput): [String]
   deleteComment(input: DeleteCommentInput): Boolean
   writeRecomment(input: WriteRecommentInput): Comment
+  updateContemplationViewer(input: UpdateContemplationViewerInput): Int 
 }

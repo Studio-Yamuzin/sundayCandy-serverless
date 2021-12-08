@@ -69,7 +69,7 @@ type Mutation {
   createGeneralRoom(input: CreateRoomInput): RoomInfo
   sendMessage(roomId: ID!, input: SendMessageInput): Message
   updateRoomSetting(input: UpdateRoomSettingInput): RoomInfo
-  exitRoom(input: ExitRoomInput): [RoomInfo]
+  exitRoom(input: ExitRoomInput): Boolean
 }
 
 type Subscription {

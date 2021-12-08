@@ -29,7 +29,12 @@ input UpdateChurchInput {
   type: String
 }
 
+input ConfirmChurchInput {
+  id: ID!
+}
+
 type Mutation {
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
+  confirmChurch(input: ConfirmChurchInput): Church
 }
