@@ -2,6 +2,7 @@ generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x", "darwin"]
 }
+
 // darwin for localhost test
 
 datasource db {
@@ -18,6 +19,7 @@ model Church {
   address            String               @db.VarChar(30)
   phoneNumber        String?              @db.VarChar(10)
   createdAt          DateTime             @default(now())
+  isConfirmed        Boolean              @default(false)
   AuthenticationCode AuthenticationCode[]
   contemplations     Contemplation[]
   users              User[]
@@ -121,18 +123,18 @@ model ContemplationReference {
 }
 
 model Contemplation {
-  id         String                   @id @default(cuid())
-  writerId   String
-  createdAt  DateTime                 @default(now())
-  content    String                   @db.VarChar(200)
-  range      RangeType
-  viewer     Int                      @default(0)
-  churchId   String?
-  church     Church?                  @relation(fields: [churchId], references: [id])
-  writer     User                     @relation(fields: [writerId], references: [id])
-  comments   Comment[]
-  references ContemplationReference[]
-  likes      Like[]
+  id          String                   @id @default(cuid())
+  writerId    String
+  createdAt   DateTime                 @default(now())
+  content     String                   @db.VarChar(200)
+  range       RangeType
+  viewerCount Int                      @default(0)
+  churchId    String?
+  church      Church?                  @relation(fields: [churchId], references: [id])
+  writer      User                     @relation(fields: [writerId], references: [id])
+  comments    Comment[]
+  references  ContemplationReference[]
+  likes       Like[]
 
   @@index([churchId], map: "Contemplation_churchId_fkey")
   @@index([writerId], map: "Contemplation_writerId_fkey")
