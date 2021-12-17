@@ -12,8 +12,7 @@ import { createBookmark } from '@src/bible/createBookmark';
 import { deleteBookmark } from '@src/bible/deleteBookmark';
 import { getMyBookmarks } from '@src/bible/getMyBookmarks';
 import { getMyBookmarkByChapter } from '@src/bible/getMyBookmarkByChapter';
-import { createContemplation } from '@src/contemplation/createContemplation';
-import { getContemplationAll } from '@src/contemplation/getContemplationAll';
+import { createContemplation } from '@src/contemplation/mutation/createContemplation';
 import { createGeneralRoom } from '@src/chat/createGeneralRoom';
 import { sendMessage } from '@src/chat/sendMessage';
 import { getChurchUsers } from '@src/profile/getChurchUsers';
@@ -23,18 +22,31 @@ import { createCode } from '@src/onboarding/createCode';
 import { getMyChatRoomInfo } from '@src/chat/getMyChatRoomInfo';
 import { updateRoomSetting } from '@src/chat/updateRoomSetting';
 import { exitRoom } from '@src/chat/exitRoom';
-import { getContemplations } from '@src/contemplation/getContemplations';
-import { getContemplation } from '@src/contemplation/getContemplation';
-import { likeContemplation } from '@src/contemplation/likeContemplation';
-import { writeComment } from '@src/contemplation/writeComment';
-import { deleteContemplation } from '@src/contemplation/deleteContemplation';
-import { likeComment } from '@src/contemplation/likeComment';
-import { writeRecomment } from '@src/contemplation/writeRecomment';
-import { deleteRecomment } from '@src/contemplation/deleteRecomment';
-import { likeRecomment } from '@src/contemplation/likeRecomment';
-import { updateContemplation } from '@src/contemplation/updateContemplation';
+import { getBibleByVerseList } from '@src/bible/getBibleByVerseList';
+import { verifyCode } from '@src/profile/verifyCode';
+import { deleteContemplation } from '@src/contemplation/mutation/deleteContemplation';
+import { writeRecomment } from '@src/contemplation/mutation/writeRecomment';
+import { likeComment } from '@src/contemplation/mutation/likeComment';
+import { writeComment } from '@src/contemplation/mutation/writeComment';
+import { updateContemplation } from '@src/contemplation/mutation/updateContemplation';
+import { likeContemplation } from '@src/contemplation/mutation/likeContemplation';
+import { getContemplation } from '@src/contemplation/query/getContemplation';
+import { getContemplations } from '@src/contemplation/query/getContemplations';
+import { getContemplationComments } from '@src/contemplation/query/getContemplationComments';
+import { updateContemplationViewer } from '@src/contemplation/mutation/updateContemplationViewer';
+import { deleteComment } from '@src/contemplation/mutation/deleteComment';
+import { updateFcmToken } from '@src/profile/updateFcmToken';
+import { PrismaClient } from '.prisma/client';
+import { getMyContemplations } from '@src/contemplation/query/getMyContemplations';
+import { confirmChurch } from '@src/contemplation/mutation/confirmChurch';
+import { getHomeInfo } from '@src/admin/getHomeInfo';
+import { getWaitingChurches } from '@src/admin/getWaitingChurches';
+import { createCommunity } from '@src/community/createCommunity';
+
+export const prisma = new PrismaClient();
 
 export const main: Handler = async (event, context) => {
+  context.callbackWaitsForEmptyEventLoop = false;
   console.log(JSON.stringify(context));
   console.log(
     `graphqlHandler =>\n{\nfield : '${event.field}',\nuserId : '${event.userId}'\n}`,
@@ -58,6 +70,8 @@ export const main: Handler = async (event, context) => {
         return await getBibleByChapter(event.arguments.input);
       case 'getBibleByVerse':
         return await getBibleByVerse(event.arguments.input);
+      case 'getBibleByVerseList':
+        return await getBibleByVerseList(event.arguments.input);
       case 'createBookmark':
         return await createBookmark(event.userId, event.arguments.input);
       case 'deleteBookmark':
@@ -71,12 +85,17 @@ export const main: Handler = async (event, context) => {
         );
       case 'createContemplation':
         return await createContemplation(event.userId, event.arguments.input);
-      case 'getContemplationAll':
-        return await getContemplationAll(event.userId);
-      case 'getContemplations':
+      case 'contemplations':
         return await getContemplations(event.userId, event.arguments.input);
-      case 'getContemplation':
+      case 'contemplation':
         return await getContemplation(event.userId, event.arguments.input);
+      case 'myContemplations':
+        return await getMyContemplations(event.userId);
+      case 'contemplationComments':
+        return await getContemplationComments(
+          event.userId,
+          event.arguments.input,
+        );
       case 'createGeneralRoom':
         return await createGeneralRoom(event.userId, event.arguments.input);
       case 'sendMessage':
@@ -92,7 +111,9 @@ export const main: Handler = async (event, context) => {
       case 'getRoomMessages':
         return await getRoomMessages(event.userId, event.arguments.input);
       case 'createCode':
-        return await createCode(event.userId, event.arguments.input);
+        return await createCode(event.userId);
+      case 'verifyCode':
+        return await verifyCode(event.userId, event.arguments.input);
       case 'getMyChatRoomInfo':
         return await getMyChatRoomInfo(event.userId, event.arguments.input);
       case 'updateRoomSetting':
@@ -103,6 +124,11 @@ export const main: Handler = async (event, context) => {
         return await likeContemplation(event.userId, event.arguments.input);
       case 'updateContemplation':
         return await updateContemplation(event.userId, event.arguments.input);
+      case 'updateContemplationViewer':
+        return await updateContemplationViewer(
+          event.userId,
+          event.arguments.input,
+        );
       case 'writeComment':
         return await writeComment(event.userId, event.arguments.input);
       case 'likeComment':
@@ -111,10 +137,18 @@ export const main: Handler = async (event, context) => {
         return await deleteContemplation(event.userId, event.arguments.input);
       case 'writeRecomment':
         return await writeRecomment(event.userId, event.arguments.input);
-      case 'deleteRecomment':
-        return await deleteRecomment(event.userId, event.arguments.input);
-      case 'likeRecomment':
-        return await likeRecomment(event.userId, event.arguments.input);
+      case 'deleteComment':
+        return await deleteComment(event.userId, event.arguments.input);
+      case 'updateFcmToken':
+        return await updateFcmToken(event.userId, event.argumetns.input);
+      case 'confirmChurch':
+        return await confirmChurch(event.arguments.input);
+      case 'homeInfo':
+        return await getHomeInfo();
+      case 'waitingChurches':
+        return await getWaitingChurches(event.arguments.input);
+      case 'createCommunity':
+        return await createCommunity(event.userId, event.argumetns.input);
       default:
         throw new Error('GraphqlQL Fields are not valid');
     }

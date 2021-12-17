@@ -1,16 +1,18 @@
-import { Church } from "@src/types";
-import { dynamodb } from "libs/dynamodb"
+import { Church } from '@src/types';
+import { prisma } from 'handlers/graphqlHandler';
 
-export const getUserChurch = async(userId: string): Promise<Church> => {
-  try{
-    const result = await dynamodb.queryByKeys(userId, "church");
-    console.log(result);
-    if(result.length === 0){
-      throw new Error("교회 없음.");
-    }else{
-      return result[0];
-    }
-  }catch(error){
-    throw new Error("교회 찾기 실패");
+export const getUserChurch = async (userId: string): Promise<Church> => {
+  try {
+    const userQueryResult = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        church: true,
+      },
+    });
+    return userQueryResult.church;
+  } catch (error) {
+    throw new Error('교회 찾기 실패');
   }
-}
+};

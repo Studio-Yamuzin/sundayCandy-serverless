@@ -1,28 +1,27 @@
-import { getProfile } from "@src/profile/getProfile";
-import { Code, CreateCodeInput } from "@src/types";
-import { dynamodb } from "libs/dynamodb";
-import { ulid } from "ulid";
+import { Code } from '@src/types';
+import { prisma } from 'handlers/graphqlHandler';
 
-export const createCode = async(userId: string, {level}: CreateCodeInput): Promise<Code> => {
-  try{
-    const randomNumber = Math.floor((Math.random() * 1000000) + 1);
-    const profile = await getProfile(userId);
-    const id = `${profile.church}-${ulid()}`;
-    const params = {
-      PK: 'code',
-      SK: `${id}`,
-      level: level,
-      code: randomNumber,
-    }
-    console.log(params);
-    await dynamodb.putItem(params);
+export const createCode = async (userId: string): Promise<Code> => {
+  try {
+    const randomNumber = Math.floor(Math.random() * 1000000 + 1).toString();
+    const userInfo = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    const createCodeResult = await prisma.authenticationCode.create({
+      data: {
+        verifyNumber: randomNumber,
+        churchId: userInfo.churchId,
+      },
+    });
+
     return {
-      id: id,
-      verifyNumber: randomNumber.toString(),
-      level: level,
-      createdAt: new Date().toISOString(),
-    }
-  }catch(error){
-    throw new Error("코드 발급에 실패하였습니다.");
+      id: createCodeResult.id,
+      verifyNumber: createCodeResult.verifyNumber,
+      createdAt: createCodeResult.createdAt.toUTCString(),
+    };
+  } catch (error) {
+    throw new Error('코드 발급에 실패하였습니다.');
   }
-}
+};

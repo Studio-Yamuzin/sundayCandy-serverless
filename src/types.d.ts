@@ -22,6 +22,30 @@ export type Bible = {
   verse: Scalars['Int'];
 };
 
+export type Board = {
+  __typename?: 'Board';
+  boardPreset?: Maybe<BoardPreset>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  posts?: Maybe<Array<Maybe<Post>>>;
+};
+
+export type BoardPreset = {
+  __typename?: 'BoardPreset';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<BoardPresetType>;
+};
+
+export type BoardPresetType =
+  | 'card'
+  | 'list'
+  | 'weeklyInfo';
+
+export type BoardsQueryInput = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
 export type Bookmark = {
   __typename?: 'Bookmark';
   chapter?: Maybe<Scalars['Int']>;
@@ -34,6 +58,7 @@ export type Church = {
   __typename?: 'Church';
   address: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   phoneNumber: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
@@ -49,11 +74,28 @@ export type Code = {
 
 export type Comment = {
   __typename?: 'Comment';
+  id: Scalars['ID'];
   likers?: Maybe<Array<Maybe<Scalars['String']>>>;
   recomments?: Maybe<Array<Maybe<Comment>>>;
   text?: Maybe<Scalars['String']>;
   timeStamp?: Maybe<Scalars['String']>;
   writer?: Maybe<Profile>;
+};
+
+export type Community = {
+  __typename?: 'Community';
+  admins?: Maybe<Array<Maybe<Profile>>>;
+  boards?: Maybe<Array<Maybe<Board>>>;
+  church?: Maybe<Church>;
+  createdAt?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  photo?: Maybe<Scalars['String']>;
+  users?: Maybe<Array<Maybe<Profile>>>;
+};
+
+export type ConfirmChurchInput = {
+  id: Scalars['ID'];
 };
 
 export type Contemplation = {
@@ -66,8 +108,12 @@ export type Contemplation = {
   range?: Maybe<RangeType>;
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
   timeStamp?: Maybe<Scalars['String']>;
-  viewers?: Maybe<Array<Maybe<Scalars['String']>>>;
+  viewerCount?: Maybe<Scalars['Int']>;
   writer?: Maybe<Profile>;
+};
+
+export type ContemplationCommentsInput = {
+  id: Scalars['ID'];
 };
 
 export type CreateBookmarkInput = {
@@ -82,6 +128,11 @@ export type CreateChurchInput = {
   phoneNumber: Scalars['String'];
   photo?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+};
+
+export type CreateCommunityInput = {
+  name?: Maybe<Scalars['String']>;
+  photo?: Maybe<Scalars['String']>;
 };
 
 export type CreateContemplationInput = {
@@ -172,10 +223,16 @@ export type GetRoomMessagesInput = {
   roomId: Scalars['String'];
 };
 
+export type HomeInfo = {
+  __typename?: 'HomeInfo';
+  churchCount?: Maybe<Scalars['Int']>;
+  userCount?: Maybe<Scalars['Int']>;
+  waitingChurch?: Maybe<Scalars['Int']>;
+};
+
 export type LevelType =
-  | 'first'
-  | 'second'
-  | 'third';
+  | 'admin'
+  | 'user';
 
 export type LikeCommentInput = {
   id: Scalars['ID'];
@@ -203,26 +260,39 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  confirmChurch?: Maybe<Church>;
+  createBoard?: Maybe<Board>;
   createBookmark?: Maybe<Bookmark>;
   createChurch?: Maybe<Church>;
   createCode?: Maybe<Code>;
+  createCommunity?: Maybe<Community>;
   createContemplation?: Maybe<Contemplation>;
   createGeneralRoom?: Maybe<RoomInfo>;
+  createPost?: Maybe<Post>;
   createProfile?: Maybe<Profile>;
   deleteBookmark?: Maybe<Bookmark>;
   deleteComment?: Maybe<Scalars['Boolean']>;
   deleteContemplation?: Maybe<Contemplation>;
-  exitRoom?: Maybe<Array<Maybe<RoomInfo>>>;
-  likeComment?: Maybe<Comment>;
-  likeContemplation?: Maybe<Contemplation>;
+  exitRoom?: Maybe<Scalars['Boolean']>;
+  likeComment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  likeContemplation?: Maybe<Array<Maybe<Scalars['String']>>>;
   sendMessage?: Maybe<Message>;
   updateChurch?: Maybe<Church>;
+  updateCommunityInfo?: Maybe<Community>;
+  updateCommunityUsers?: Maybe<Community>;
   updateContemplation?: Maybe<Contemplation>;
+  updateContemplationViewer?: Maybe<Scalars['Int']>;
+  updateFcmToken?: Maybe<Profile>;
   updateProfile?: Maybe<Profile>;
   updateRoomSetting?: Maybe<RoomInfo>;
   verifyCode?: Maybe<Profile>;
   writeComment?: Maybe<Comment>;
   writeRecomment?: Maybe<Comment>;
+};
+
+
+export type MutationConfirmChurchArgs = {
+  input?: Maybe<ConfirmChurchInput>;
 };
 
 
@@ -233,6 +303,11 @@ export type MutationCreateBookmarkArgs = {
 
 export type MutationCreateChurchArgs = {
   input?: Maybe<CreateChurchInput>;
+};
+
+
+export type MutationCreateCommunityArgs = {
+  input?: Maybe<CreateCommunityInput>;
 };
 
 
@@ -292,8 +367,28 @@ export type MutationUpdateChurchArgs = {
 };
 
 
+export type MutationUpdateCommunityInfoArgs = {
+  input?: Maybe<UpdateCommunityInfoInput>;
+};
+
+
+export type MutationUpdateCommunityUsersArgs = {
+  input?: Maybe<UpdateCommunityUsersInput>;
+};
+
+
 export type MutationUpdateContemplationArgs = {
   input?: Maybe<UpdateContemplationInput>;
+};
+
+
+export type MutationUpdateContemplationViewerArgs = {
+  input?: Maybe<UpdateContemplationViewerInput>;
+};
+
+
+export type MutationUpdateFcmTokenArgs = {
+  input?: Maybe<UpdateFcmTokenInput>;
 };
 
 
@@ -324,7 +419,8 @@ export type MutationWriteRecommentArgs = {
 export type OnboardingStep =
   | 'done'
   | 'first'
-  | 'second';
+  | 'second'
+  | 'watingConfirm';
 
 export type PaginatedMessages = {
   __typename?: 'PaginatedMessages';
@@ -332,10 +428,27 @@ export type PaginatedMessages = {
   messages?: Maybe<Array<Maybe<Message>>>;
 };
 
+export type Post = {
+  __typename?: 'Post';
+  comment?: Maybe<Array<Maybe<Comment>>>;
+  content?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  photos?: Maybe<Array<Maybe<Scalars['String']>>>;
+  title?: Maybe<Scalars['String']>;
+  writer?: Maybe<Profile>;
+};
+
+export type PostsQueryInput = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
 export type Profile = {
   __typename?: 'Profile';
   birthDay?: Maybe<Scalars['String']>;
   church?: Maybe<Church>;
+  fcmToken?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   level?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -346,24 +459,47 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
+  board?: Maybe<Board>;
+  boards?: Maybe<Array<Maybe<Board>>>;
+  communities?: Maybe<Array<Maybe<Community>>>;
+  community?: Maybe<Community>;
+  contemplation?: Maybe<Contemplation>;
+  contemplationComments?: Maybe<Array<Maybe<Comment>>>;
+  contemplations?: Maybe<Array<Maybe<Contemplation>>>;
   getBibleByChapter?: Maybe<Array<Maybe<Bible>>>;
   getBibleByVerse?: Maybe<Bible>;
   getBibleByVerseList?: Maybe<Array<Maybe<Bible>>>;
   getChurch?: Maybe<Church>;
   getChurchUsers?: Maybe<Array<Maybe<Profile>>>;
-  getContemplation?: Maybe<Contemplation>;
-  getContemplationAll?: Maybe<Array<Maybe<Contemplation>>>;
-  getContemplations?: Maybe<Array<Maybe<Contemplation>>>;
   getMyBookmarkByChapter?: Maybe<Bookmark>;
   getMyBookmarks?: Maybe<Array<Maybe<Bookmark>>>;
   getMyChatRoomInfo?: Maybe<RoomInfo>;
   getMyChatRooms?: Maybe<Array<Maybe<RoomInfo>>>;
-  getMyContemplations?: Maybe<Array<Maybe<Contemplation>>>;
   getOnboardingStep?: Maybe<OnboardingStep>;
   getProfile?: Maybe<Profile>;
   getRecentMessage?: Maybe<Message>;
   getRoomMessages?: Maybe<PaginatedMessages>;
   getUserChurch?: Maybe<UserChurch>;
+  homeInfo?: Maybe<HomeInfo>;
+  myContemplations?: Maybe<Array<Maybe<Contemplation>>>;
+  post?: Maybe<Array<Maybe<Post>>>;
+  posts?: Maybe<Array<Maybe<Post>>>;
+  waitingChurches?: Maybe<Array<Maybe<Church>>>;
+};
+
+
+export type QueryContemplationArgs = {
+  input?: Maybe<GetContemplationInput>;
+};
+
+
+export type QueryContemplationCommentsArgs = {
+  input?: Maybe<ContemplationCommentsInput>;
+};
+
+
+export type QueryContemplationsArgs = {
+  input?: Maybe<GetContemplationsInput>;
 };
 
 
@@ -387,16 +523,6 @@ export type QueryGetChurchArgs = {
 };
 
 
-export type QueryGetContemplationArgs = {
-  input?: Maybe<GetContemplationInput>;
-};
-
-
-export type QueryGetContemplationsArgs = {
-  input?: Maybe<GetContemplationsInput>;
-};
-
-
 export type QueryGetMyBookmarkByChapterArgs = {
   input?: Maybe<GetMyBookmarkByChapterInput>;
 };
@@ -414,6 +540,11 @@ export type QueryGetRecentMessageArgs = {
 
 export type QueryGetRoomMessagesArgs = {
   input?: Maybe<GetRoomMessagesInput>;
+};
+
+
+export type QueryWaitingChurchesArgs = {
+  input?: Maybe<WatingChurchesInput>;
 };
 
 export type RangeType =
@@ -455,9 +586,26 @@ export type UpdateChurchInput = {
   type?: Maybe<Scalars['String']>;
 };
 
+export type UpdateCommunityInfoInput = {
+  name?: Maybe<Scalars['String']>;
+  photo?: Maybe<Scalars['String']>;
+};
+
+export type UpdateCommunityUsersInput = {
+  users?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
 export type UpdateContemplationInput = {
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
+};
+
+export type UpdateContemplationViewerInput = {
+  id: Scalars['ID'];
+};
+
+export type UpdateFcmTokenInput = {
+  token?: Maybe<Scalars['String']>;
 };
 
 export type UpdateRoomSettingInput = {
@@ -482,6 +630,11 @@ export type VerifyCodeInput = {
   verifyNumber?: Maybe<Scalars['String']>;
 };
 
+export type WatingChurchesInput = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
 export type WriteCommentInput = {
   contemplationID: Scalars['ID'];
   text: Scalars['String'];
@@ -489,6 +642,5 @@ export type WriteCommentInput = {
 
 export type WriteRecommentInput = {
   commentId: Scalars['ID'];
-  parent: Scalars['String'];
   text: Scalars['String'];
 };

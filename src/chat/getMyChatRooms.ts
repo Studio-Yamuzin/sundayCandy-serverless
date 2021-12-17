@@ -1,4 +1,4 @@
-import { getProfiles } from '@src/profile/getProfiles';
+import { getUserProfile } from '@src/service/Profile/getUsersProfile';
 import { RoomInfo } from '@src/types';
 import { dynamodb } from 'libs/dynamodb';
 
@@ -25,7 +25,7 @@ export const getMyChatRooms = async (userId: string): Promise<RoomInfo[]> => {
             };
           }
 
-          const profiles = await getProfiles(connection.users);
+          const profiles = await getUserProfile(connection.users);
 
           if (connection.recentReadMessage) {
             unReadCount = recentMessage.findIndex(

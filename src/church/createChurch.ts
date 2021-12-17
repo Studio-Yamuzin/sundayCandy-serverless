@@ -1,6 +1,6 @@
-import { getProfile } from '@src/profile/getProfile';
 import { Church, CreateChurchInput, Maybe } from '@src/types';
-import { dynamodb } from 'libs/dynamodb';
+import { prisma } from 'handlers/graphqlHandler';
+import { LevelType } from '.prisma/client';
 
 export const createChurch = async (
   userId: string,
@@ -9,33 +9,34 @@ export const createChurch = async (
   }: CreateChurchInput,
 ): Promise<Maybe<Church>> => {
   try {
-    const churchId = `church-${name}`;
-    const profile = await getProfile(userId);
-    await dynamodb.putItem({
-      PK: churchId,
-      SK: 'profile',
-      name,
-      type,
-      description,
-      address,
-      phoneNumber,
+    const createChurchResult = await prisma.church.create({
+      data: {
+        name,
+        type,
+        description,
+        address,
+        phoneNumber,
+      },
     });
-    await dynamodb.putItem({
-      PK: userId,
-      SK: 'church',
-      name,
-    });
-    await dynamodb.putItem({
-      ...profile,
-      level: '3',
+
+    await prisma.user.create({
+      data: {
+        id: userId,
+        level: LevelType.admin,
+        church: {
+          connect: {
+            id: createChurchResult.id,
+          },
+        },
+      },
     });
 
     return {
-      name,
-      type,
-      description,
-      address,
-      phoneNumber,
+      name: createChurchResult.name,
+      type: createChurchResult.type,
+      description: createChurchResult.description,
+      address: createChurchResult.address,
+      phoneNumber: createChurchResult.phoneNumber,
     };
   } catch (error) {
     throw new Error('교회 생성에 실패했어요.\n다시 시도해주세요.');

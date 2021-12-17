@@ -1,7 +1,5 @@
 import { Bookmark, DeleteBookmarkInput } from '@src/types';
-import { PrismaClient } from '.prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'handlers/graphqlHandler';
 
 export const deleteBookmark = async (
   userId: string,

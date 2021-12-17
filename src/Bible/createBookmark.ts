@@ -1,7 +1,5 @@
 import { Bookmark, CreateBookmarkInput } from '@src/types';
-import { PrismaClient } from '.prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'handlers/graphqlHandler';
 
 export const createBookmark = async (
   userId: string,
@@ -16,11 +14,14 @@ export const createBookmark = async (
       },
     });
 
+    if (!createBookmarkResult) {
+      return null;
+    }
     return {
       id: createBookmarkResult.id,
       title: createBookmarkResult.title,
       chapter: createBookmarkResult.chapter,
-      date: createBookmarkResult.createdAt.toUTCString(),
+      date: createBookmarkResult.createdAt.toISOString(),
     };
   } catch (error) {
     throw new Error('책갈피 생성에 실패했어요.\n다시 시도해주세요.');

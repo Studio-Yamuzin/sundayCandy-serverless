@@ -1,25 +1,25 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import {CognitoIdentityServiceProvider} from 'aws-sdk';
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import axios from 'axios';
 import { dynamodb } from 'libs/dynamodb';
 
 const cognitoServiceProvider = new CognitoIdentityServiceProvider({
   apiVersion: '2016-04-18',
 });
-const KAKAO_TOKEN_VERIFICATION_URL = "https://kapi.kakao.com/v2/user/me";
+const KAKAO_TOKEN_VERIFICATION_URL = 'https://kapi.kakao.com/v2/user/me';
 
-export const main: APIGatewayProxyHandler = async (event, context) => {
-  const {accessToken} = JSON.parse(event.body);
+export const main: APIGatewayProxyHandler = async (event) => {
+  const { accessToken } = JSON.parse(event.body);
   const result = await axios.get(KAKAO_TOKEN_VERIFICATION_URL, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-    }
+    },
   });
 
   const GroupName = 'kakao';
-  const UserPoolId = `ap-northeast-2_eOsy1c65x`;
-  const ClientId = `204t8opj0rek1k4qb5ca66d6cn`;
-  const Username = 'kakao_' + result.data.id;
+  const UserPoolId = 'ap-northeast-2_eOsy1c65x';
+  const ClientId = '204t8opj0rek1k4qb5ca66d6cn';
+  const Username = `kakao_${result.data.id}`;
   const newUserParam = {
     ClientId,
     Username,
@@ -43,28 +43,28 @@ export const main: APIGatewayProxyHandler = async (event, context) => {
 
   const ddbParams = {
     TableName: process.env.authTableName,
-    KeyConditionExpression: "PK = :Username",
+    KeyConditionExpression: 'PK = :Username',
     ExpressionAttributeValues: {
-      ":Username": Username
-    }
+      ':Username': Username,
+    },
   };
-  
+
   const existUser = await dynamodb.query(ddbParams);
 
-  if(existUser.Count === 0){
+  if (existUser.Count === 0) {
     await cognitoServiceProvider.signUp(newUserParam).promise();
     await dynamodb.put({
       TableName: process.env.authTableName,
       Item: {
-        PK: Username
-      }
+        PK: Username,
+      },
     });
   }
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      Username: Username
-    })
-  }
-}
+      Username,
+    }),
+  };
+};
