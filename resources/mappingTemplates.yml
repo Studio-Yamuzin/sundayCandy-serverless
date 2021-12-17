@@ -2,165 +2,195 @@ Templates:
   - dataSource: Lambda
     type: Mutation
     field: createChurch
-    request: "church/createChurch-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'church/createChurch-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: createProfile
-    request: "profile/createProfile-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'profile/createProfile-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getOnboardingStep
-    request: "onboardingStep/getOnboardingStep-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'onboardingStep/getOnboardingStep-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getChurch
-    request: "church/getChurch-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'church/getChurch-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getUserChurch
-    request: "church/getUserChurch-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'church/getUserChurch-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getProfile
-    request: "profile/getProfile-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'profile/getProfile-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getBibleByChapter
-    request: "bible/getBibleByChapter-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/getBibleByChapter-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getBibleByVerse
-    request: "bible/getBibleByVerse-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/getBibleByVerse-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getBibleByVerseList
-    request: "bible/getBibleByVerseList-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/getBibleByVerseList-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getMyBookmarkByChapter
-    request: "bible/getMyBookmarkByChapter-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/getMyBookmarkByChapter-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getMyBookmarks
-    request: "bible/getMyBookmarks-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/getMyBookmarks-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: createBookmark
-    request: "bible/createBookmark-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/createBookmark-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: deleteBookmark
-    request: "bible/deleteBookmark-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'bible/deleteBookmark-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: createContemplation
-    request: "contemplation/createContemplation-request.vtl"
-    response: "common/lambda-response.vtl"
-  - dataSource: Lambda
-    type: Query
-    field: getContemplationAll
-    request: "contemplation/getContemplationAll-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/createContemplation-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: createGeneralRoom
-    request: "chat/createGeneralRoom-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/createGeneralRoom-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: sendMessage
-    request: "chat/sendMessage-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/sendMessage-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getChurchUsers
-    request: "profile/getChurchUsers-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'profile/getChurchUsers-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getMyChatRooms
-    request: "chat/getMyChatRooms-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/getMyChatRooms-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getRoomMessages
-    request: "chat/getRoomMessages-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/getRoomMessages-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: createCode
-    request: "code/createCode-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'code/createCode-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: verifyCode
+    request: 'code/verifyCode-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
     field: getMyChatRoomInfo
-    request: "chat/getMyChatRoomInfo-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/getMyChatRoomInfo-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: exitRoom
-    request: "chat/exitRoom-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'chat/exitRoom-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
-    field: getContemplations
-    request: "contemplation/getContemplations-request.vtl"
-    response: "common/lambda-response.vtl"
+    field: contemplations
+    request: 'contemplation/contemplations-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Query
-    field: getContemplation
-    request: "contemplation/getContemplation-request.vtl"
-    response: "common/lambda-response.vtl"
+    field: contemplation
+    request: 'contemplation/contemplation-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: contemplationComments
+    request: 'contemplation/contemplationComments-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: likeContemplation
-    request: "contemplation/likeContemplation-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/likeContemplation-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: updateContemplation
-    request: "contemplation/updateContemplation-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/updateContemplation-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: deleteContemplation
-    request: "contemplation/deleteContemplation-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/deleteContemplation-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: writeComment
-    request: "contemplation/writeComment-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/writeComment-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: likeComment
-    request: "contemplation/likeComment-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/likeComment-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
     field: writeRecomment
-    request: "contemplation/writeRecomment-request.vtl"
-    response: "common/lambda-response.vtl"
+    request: 'contemplation/writeRecomment-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
-    field: deleteRecomment
-    request: "contemplation/deleteRecomment-request.vtl"
-    response: "common/lambda-response.vtl"
+    field: updateContemplationViewer
+    request: 'contemplation/updateContemplationViewer-request.vtl'
+    response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
-    field: likeRecomment
-    request: "contemplation/likeRecomment-request.vtl"
-    response: "common/lambda-response.vtl"
+    field: deleteComment
+    request: 'contemplation/deleteComment-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: updateFcmToken
+    request: 'profile/updateFcmToken-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: myContemplations
+    request: 'contemplation/myContemplations-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: confirmChurch
+    request: 'church/confirmChurch-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: homeInfo
+    request: 'admin/homeInfo-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: waitingChurches
+    request: 'admin/waitingChurches-request.vtl'
+    response: 'common/lambda-response.vtl'
