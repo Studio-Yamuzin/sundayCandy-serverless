@@ -1896,19 +1896,19 @@
 
 "@prisma/client@^3.5.0":
   version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-3.5.0.tgz#bb0c9c10fd9912209f5bfd01c1683094d8fa9a2d"
+  resolved "https://registry.npmjs.org/@prisma/client/-/client-3.5.0.tgz"
   integrity sha512-LuaaisknLe9CCfJ1Rtqe9b9knvPgEEcC77OMmWdo3fSanxl5oTDxcH3IIhpULQQlJfZvDcaEXuXNU4dsNF+q1w==
   dependencies:
     "@prisma/engines-version" "3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e"
 
 "@prisma/engines-version@3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e":
   version "3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e.tgz#254fdb80ae6db397ee1e638d12561f35d058e340"
+  resolved "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e.tgz"
   integrity sha512-X16YmBmj7Omso4ZbkNBe6gPYlNcnwZMUPtXsguCkn+KoMqm3DJD9M4X31gx0Gf13Q44dY3SKPJZUk44/XUj/WA==
 
 "@prisma/engines@3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e":
   version "3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e.tgz#1873885836294060239f8a887452fd429dc03ae1"
+  resolved "https://registry.npmjs.org/@prisma/engines/-/engines-3.5.0-38.78a5df6def6943431f4c022e1428dbc3e833cf8e.tgz"
   integrity sha512-MqZUrxuLlIbjB3wu8LrRJOKcvR4k3dunKoI4Q2bPfAwLQY0XlpsLZ3TRVW1c32ooVk939p6iGNkaCUo63Et36g==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
@@ -2831,9 +2831,9 @@ apollo-server-express@^3.5.0:
     cors "^2.8.5"
     parseurl "^1.3.3"
 
-apollo-server-lambda@^3.3.0:
+apollo-server-lambda@^3.5.0:
   version "3.5.0"
-  resolved "https://registry.npmjs.org/apollo-server-lambda/-/apollo-server-lambda-3.5.0.tgz"
+  resolved "https://registry.yarnpkg.com/apollo-server-lambda/-/apollo-server-lambda-3.5.0.tgz#b4baf9081403e22d312b14e291b1b5dc6d5416a1"
   integrity sha512-thFcD8q57bqkkgAXWcc4vBpuU+0xvfSRLag07l8vu0zt0VN9N1WF4RA5EUP6ic7UJYgsFcCqYrR9qLPl++H/Sg==
   dependencies:
     "@types/aws-lambda" "^8.10.76"
@@ -5791,6 +5791,13 @@ graphql-playground-middleware-koa@^1.6.21:
   version "1.6.22"
   resolved "https://registry.npmjs.org/graphql-playground-middleware-koa/-/graphql-playground-middleware-koa-1.6.22.tgz"
   integrity sha512-soVUM76ecq5GHk12H69Ce7afzbYuWWc73oKMOcEkmtAn/G9NUdsNvLjLdCnHQX1V0cOUeSbmcYcrebyBOIYGMQ==
+  dependencies:
+    graphql-playground-html "^1.6.30"
+
+graphql-playground-middleware-lambda@^1.7.24:
+  version "1.7.24"
+  resolved "https://registry.yarnpkg.com/graphql-playground-middleware-lambda/-/graphql-playground-middleware-lambda-1.7.24.tgz#f20e00b12463c242668f9ca1672ae7db4715ebf7"
+  integrity sha512-jNP0QRvm0AIS4/caIsiNAjpa7R0mEk8RpC6fsZ+5nT2VYxLWdJg/XUIUyEzWzuneCt9/W1KCbdEAlhVg/UyJEQ==
   dependencies:
     graphql-playground-html "^1.6.30"
 
@@ -8809,9 +8816,9 @@ prepend-http@^2.0.0:
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
 prettier@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
-  integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
+  version "2.5.0"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-2.5.0.tgz"
+  integrity sha512-FM/zAKgWTxj40rH03VxzIPdXmj39SwSjwG0heUcNFwI+EMZJnY93yAiKXM3dObIKAM5TA88werc8T/EwhB45eg==
 
 pretty-format@^26.6.2:
   version "26.6.2"
