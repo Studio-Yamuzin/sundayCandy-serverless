@@ -1,0 +1,15 @@
+type HomeInfo {
+  userCount: Int
+  churchCount: Int
+  waitingChurch: Int
+}
+
+input WatingChurchesInput {
+  limit: Int
+  offset: Int
+}
+
+type Query {
+  homeInfo: HomeInfo
+  waitingChurches(input: WatingChurchesInput): [Church]
+}

@@ -10,6 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RangeType {
+  public
+  private
+}
+
+enum BoardAccessibilityType {
+  communityAdmin
+  user
+}
+
+enum LevelType {
+  admin
+  user
+}
+
+enum ChatRoomType {
+  community
+  general
+}
+
+enum BoardPresetType {
+  list
+  card
+  weeklyInfo // 주보
+}
+
+enum AdminLogType {
+  adminRegist
+  adminCancel
+  communityAdminRegist
+  communityAdminCancel
+  userResign
+  userForceResign
+  deleteContemplation
+  deletePost
+  deleteComment
+}
+
 model Church {
   id                 String               @id @default(cuid())
   name               String               @db.VarChar(20)
@@ -23,6 +61,7 @@ model Church {
   AuthenticationCode AuthenticationCode[]
   contemplations     Contemplation[]
   users              User[]
+  Community          Community[]
 }
 
 model AuthenticationCode {
@@ -49,13 +88,13 @@ model User {
   photo           String?
   church          Church            @relation(fields: [churchId], references: [id])
   Bookmark        Bookmark[]
-  ChatConnection  ChatConnection[]
   Comment         Comment[]
   communityStatus CommunityStatus[]
   Contemplation   Contemplation[]
   Like            Like[]
-  ChatRoom        ChatRoom[]
 
+  Community   Community? @relation(fields: [communityId], references: [id])
+  communityId String?
   @@index([churchId], map: "User_churchId_fkey")
 }
 
@@ -80,37 +119,6 @@ model CommunityStatus {
 
   @@index([communityId], map: "CommunityStatus_communityId_fkey")
   @@index([userId], map: "CommunityStatus_userId_fkey")
-}
-
-model Community {
-  id              String            @id @default(cuid())
-  name            String
-  createdAt       DateTime          @default(now())
-  Board           Board[]
-  CommunityStatus CommunityStatus[]
-}
-
-model ChatConnection {
-  userId            String
-  chatRoomId        String
-  name              String?
-  createdAt         DateTime @default(now())
-  lastReadMessageId String?
-  photoUri          String?
-  chatRoom          ChatRoom @relation(fields: [chatRoomId], references: [id])
-  user              User     @relation(fields: [userId], references: [id])
-
-  @@id([chatRoomId, userId])
-  @@index([userId], map: "ChatConnection_userId_fkey")
-}
-
-model ChatRoom {
-  id              String           @id @default(cuid())
-  type            ChatRoomType
-  createdAt       DateTime         @default(now())
-  lastMessageId   String?
-  chatConnections ChatConnection[]
-  user            User[]
 }
 
 model ContemplationReference {
@@ -164,19 +172,31 @@ model Comment {
 model Like {
   id              String         @id @default(cuid())
   userId          String
-  boardId         String?
+  postId          String?
   commentId       String?
   createdAt       DateTime       @default(now())
   contemplationId String?
-  board           Board?         @relation(fields: [boardId], references: [id])
+  post            Post?          @relation(fields: [postId], references: [id])
   comment         Comment?       @relation(fields: [commentId], references: [id])
   contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
   user            User           @relation(fields: [userId], references: [id])
 
-  @@index([boardId], map: "Like_boardId_fkey")
+  @@index([postId], map: "Like_postId_fkey")
   @@index([commentId], map: "Like_commentId_fkey")
   @@index([contemplationId], map: "Like_contemplationId_fkey")
   @@index([userId], map: "Like_userId_fkey")
+}
+
+model Community {
+  id              String            @id @default(cuid())
+  churchId        String
+  name            String
+  photo           String?
+  createdAt       DateTime          @default(now())
+  boards          Board[]
+  communityStatus CommunityStatus[]
+  admins          User[]
+  Church          Church            @relation(fields: [churchId], references: [id])
 }
 
 model BoardPreset {
@@ -194,7 +214,6 @@ model Board {
   createdAt     DateTime    @default(now())
   boardPreset   BoardPreset @relation(fields: [boardPresetId], references: [id])
   community     Community   @relation(fields: [communityId], references: [id])
-  Like          Like[]
   posts         Post[]
 
   @@index([boardPresetId], map: "Board_boardPresetId_fkey")
@@ -204,12 +223,14 @@ model Board {
 model Post {
   id        String    @id @default(cuid())
   title     String
+  content   String
   boardId   String
   createdAt DateTime  @default(now())
   board     Board     @relation(fields: [boardId], references: [id])
   comment   Comment[]
   photo     Photo[]
 
+  Like Like[]
   @@index([boardId], map: "Post_boardId_fkey")
 }
 
@@ -219,26 +240,4 @@ model Photo {
   uri       String
   createdAt DateTime @default(now())
   Post      Post?    @relation(fields: [postId], references: [id])
-
-  @@index([postId], map: "Photo_postId_fkey")
-}
-
-enum RangeType {
-  public
-  private
-}
-
-enum LevelType {
-  admin
-  user
-}
-
-enum ChatRoomType {
-  community
-  general
-}
-
-enum BoardPresetType {
-  photo
-  inline
 }

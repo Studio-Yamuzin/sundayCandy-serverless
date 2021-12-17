@@ -1,4 +1,5 @@
 type Church {
+  id: String
   name: String!
   description: String
   address: String!

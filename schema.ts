@@ -1,4 +1,44 @@
-export const schema = `type Bible {
+export const schema = `type HomeInfo {
+  userCount: Int
+  churchCount: Int
+  waitingChurch: Int
+}
+
+input WatingChurchesInput {
+  limit: Int
+  offset: Int
+}
+
+type Query {
+  homeInfo: HomeInfo
+  waitingChurches(input: WatingChurchesInput): [Church]
+  getBibleByChapter(input: GetBibleByChapterInput!): [Bible]
+  getBibleByVerse(input: GetBibleByVerseInput!): Bible
+  getBibleByVerseList(input: GetBibleByVerseListInput!): [Bible]
+  getMyBookmarks: [Bookmark]
+  getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
+  getMyChatRooms: [RoomInfo]
+  getMyChatRoomInfo(input: GetMyChatRoomInfoInput): RoomInfo
+  getRoomMessages(input: GetRoomMessagesInput): PaginatedMessages
+  getRecentMessage(input: GetRecentMessageInput): Message
+  getChurch(chuchId: ID!): Church
+  communities: [Community]
+  community: Community
+  boards: [Board]
+  board: Board
+  posts: [Post]
+  post: [Post]
+  contemplations(input: GetContemplationsInput): [Contemplation]
+  contemplation(input: GetContemplationInput): Contemplation
+  myContemplations: [Contemplation]
+  contemplationComments(input: ContemplationCommentsInput): [Comment]
+  getProfile: Profile
+  getChurchUsers: [Profile]
+  getUserChurch: UserChurch
+  getOnboardingStep: OnboardingStep
+}
+
+type Bible {
   PK: ID!
   SK: ID!
   title: String!
@@ -44,27 +84,6 @@ input GetMyBookmarkByChapterInput {
   chapter: Int!
 }
 
-type Query {
-  getBibleByChapter(input: GetBibleByChapterInput!): [Bible]
-  getBibleByVerse(input: GetBibleByVerseInput!): Bible
-  getBibleByVerseList(input: GetBibleByVerseListInput!): [Bible]
-  getMyBookmarks: [Bookmark]
-  getMyBookmarkByChapter(input: GetMyBookmarkByChapterInput): Bookmark
-  getMyChatRooms: [RoomInfo]
-  getMyChatRoomInfo(input: GetMyChatRoomInfoInput): RoomInfo
-  getRoomMessages(input: GetRoomMessagesInput): PaginatedMessages
-  getRecentMessage(input: GetRecentMessageInput): Message
-  getChurch(chuchId: ID!): Church
-  contemplations(input: GetContemplationsInput): [Contemplation]
-  contemplation(input: GetContemplationInput): Contemplation
-  myContemplations: [Contemplation]
-  contemplationComments(input: ContemplationCommentsInput): [Comment]
-  getProfile: Profile
-  getChurchUsers: [Profile]
-  getUserChurch: UserChurch
-  getOnboardingStep: OnboardingStep
-}
-
 type Mutation {
   createBookmark(input: CreateBookmarkInput): Bookmark
   deleteBookmark(input: DeleteBookmarkInput): Bookmark
@@ -75,6 +94,11 @@ type Mutation {
   createChurch(input: CreateChurchInput): Church
   updateChurch(input: UpdateChurchInput): Church
   confirmChurch(input: ConfirmChurchInput): Church
+  createCommunity(input: CreateCommunityInput): Community
+  updateCommunityUsers(input: UpdateCommunityUsersInput): Community
+  updateCommunityInfo(input: UpdateCommunityInfoInput): Community
+  createBoard: Board
+  createPost: Post
   createContemplation(input: CreateContemplationInput): Contemplation
   likeContemplation(input: LikeContemplationInput): [String]
   deleteContemplation(input: DeleteContemplationInput): Contemplation
@@ -156,6 +180,7 @@ type Subscription {
 }
 
 type Church {
+  id: String
   name: String!
   description: String
   address: String!
@@ -184,6 +209,69 @@ input UpdateChurchInput {
 
 input ConfirmChurchInput {
   id: ID!
+}
+
+enum BoardPresetType {
+  list
+  card
+  weeklyInfo
+}
+
+type Community {
+  id: String
+  name: String
+  photo: String
+  createdAt: String
+  boards: [Board]
+  admins: [Profile]
+  users: [Profile]
+  church: Church
+}
+
+type BoardPreset {
+  id: String
+  name: BoardPresetType
+}
+
+type Board {
+  id: String
+  name: String
+  boardPreset: BoardPreset
+  posts: [Post]
+}
+
+input BoardsQueryInput {
+  limit: Int!
+  cursor: String
+}
+
+input PostsQueryInput {
+  limit: Int!
+  cursor: String
+}
+
+input CreateCommunityInput {
+  name: String
+  photo: String
+}
+
+input UpdateCommunityUsersInput {
+  users: [String]
+}
+
+input UpdateCommunityInfoInput {
+  name: String
+  photo: String
+}
+
+type Post {
+  id: String
+  title: String
+  content: String
+  createdAt: String
+  comment: [Comment]
+  photos: [String]
+  writer: Profile
 }
 
 enum LikeType {

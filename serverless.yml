@@ -3,9 +3,7 @@ service: sundaycandy-serverless
 
 # Create an optimized package for our functions
 package:
-  excludeDevDependencies: true
-  include:
-    - node_modules/**
+  individually: true
 
 plugins:
   - serverless-bundle # Package our functions with Webpack
@@ -45,6 +43,8 @@ provider:
         - "arn:aws:dynamodb:ap-northeast-2:*:*"
         - "arn:aws:lambda:ap-northeast-2:674304001403:function:*"
 custom:
+  serverless-offline:
+    port: 4000
   stage: dev
   accountId: 674304001403
   sundayCandyTableArn: "arn:aws:dynamodb:ap-northeast-2:${self:custom.accountId}:table/sundayCandy"
@@ -54,6 +54,13 @@ custom:
     aliases: # Create an alias to 'import' modules easily with a custom path
       - src: src
     packager: yarn
+    forceExclude:
+      - _http_common
+    copyFiles:
+      - from: 'node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node'
+        to: 'node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node'
+      - from: 'node_modules/.prisma/client/schema.prisma'
+        to: 'node_modules/.prisma/client/schema.prisma'
   appSync:
     serviceRole: "${self:custom.stage}-sundayCandy-AppSyncServiceRole"
     authenticationType: AWS_IAM
@@ -69,6 +76,7 @@ custom:
       - schemas/Bible.graphql
       - schemas/Contemplation.graphql
       - schemas/Chat.graphql
+      - schemas/Admin.graphql
     mappingTemplates: ${file(resources/mappingTemplates.yml):Templates}
     dataSources:
       - type: AMAZON_DYNAMODB
@@ -127,3 +135,10 @@ functions:
       - http:
           path: sendFcm
           method: post
+  playground:
+    handler: handlers/playgroundHandler.main
+    events:
+    - http:
+        path: /
+        method: get
+        cors: true
