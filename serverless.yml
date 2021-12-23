@@ -71,6 +71,7 @@ custom:
       existing: true
     name: sundayCandy-graphql
     schema:
+      - schemas/Community.graphql
       - schemas/User.graphql
       - schemas/Church.graphql
       - schemas/Bible.graphql

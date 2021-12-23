@@ -36,6 +36,7 @@ type Query {
   getChurchUsers: [Profile]
   getUserChurch: UserChurch
   getOnboardingStep: OnboardingStep
+  getCode: Code
 }
 
 type Bible {
@@ -97,8 +98,10 @@ type Mutation {
   createCommunity(input: CreateCommunityInput): Community
   updateCommunityUsers(input: UpdateCommunityUsersInput): Community
   updateCommunityInfo(input: UpdateCommunityInfoInput): Community
-  createBoard: Board
-  createPost: Post
+  createBoard(input: CreateBoardInput): Board
+  createHomeBoard(input: CreateHomeBoardInput): Board
+  createPost(input: CreatePostInput): Post
+  batchBoardsOrder(input: BatchBoardInput): [Board]
   createContemplation(input: CreateContemplationInput): Contemplation
   likeContemplation(input: LikeContemplationInput): [String]
   deleteContemplation(input: DeleteContemplationInput): Contemplation
@@ -217,6 +220,11 @@ enum BoardPresetType {
   weeklyInfo
 }
 
+enum CommunityType {
+  home
+  community
+}
+
 type Community {
   id: String
   name: String
@@ -228,15 +236,10 @@ type Community {
   church: Church
 }
 
-type BoardPreset {
-  id: String
-  name: BoardPresetType
-}
-
 type Board {
   id: String
   name: String
-  boardPreset: BoardPreset
+  boardPreset: BoardPresetType
   posts: [Post]
 }
 
@@ -253,6 +256,7 @@ input PostsQueryInput {
 input CreateCommunityInput {
   name: String
   photo: String
+  communityType: CommunityType
 }
 
 input UpdateCommunityUsersInput {
@@ -262,6 +266,30 @@ input UpdateCommunityUsersInput {
 input UpdateCommunityInfoInput {
   name: String
   photo: String
+}
+
+input BatchBoardInput {
+  boards: [Board]
+}
+
+input CreateBoardInput {
+  communityId: String
+  name: String!
+  boardPresetType: BoardPresetType!
+  authority: LevelType
+}
+
+input CreateHomeBoardInput {
+  name: String!
+  boardPresetType: BoardPresetType!
+  authority: LevelType
+}
+
+input CreatePostInput {
+  boardId: String
+  title: String
+  content: String
+  photos: [String]
 }
 
 type Post {
@@ -394,9 +422,10 @@ type UserChurch {
 }
 
 type Code {
-  id: ID!
-  verifyNumber: String!
-  createdAt: String!
+  id: ID
+  verifyNumber: String
+  createdAt: String
+  expiredAt: String
 }
 
 input CreateUserIput {
