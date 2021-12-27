@@ -211,6 +211,21 @@ Templates:
     response: 'common/lambda-response.vtl'
   - dataSource: Lambda
     type: Mutation
-    field: batchBoardsOrder
-    request: 'community/batchBoardsOrder-request.vtl'
+    field: updateBoardsOrder
+    request: 'community/updateBoardsOrder-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: createHomeBoard
+    request: 'community/createHomeBoard-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: homeBoards
+    request: 'community/homeBoards-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: boards
+    request: 'community/boards-request.vtl'
     response: 'common/lambda-response.vtl'

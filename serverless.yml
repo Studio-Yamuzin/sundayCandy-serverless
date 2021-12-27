@@ -71,13 +71,13 @@ custom:
       existing: true
     name: sundayCandy-graphql
     schema:
-      - schemas/Community.graphql
       - schemas/User.graphql
       - schemas/Church.graphql
       - schemas/Bible.graphql
       - schemas/Contemplation.graphql
       - schemas/Chat.graphql
       - schemas/Admin.graphql
+      - schemas/Community.graphql
     mappingTemplates: ${file(resources/mappingTemplates.yml):Templates}
     dataSources:
       - type: AMAZON_DYNAMODB
