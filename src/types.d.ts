@@ -24,27 +24,16 @@ export type Bible = {
 
 export type Board = {
   __typename?: 'Board';
-  boardPreset?: Maybe<BoardPreset>;
+  boardPreset?: Maybe<BoardPresetType>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   posts?: Maybe<Array<Maybe<Post>>>;
-};
-
-export type BoardPreset = {
-  __typename?: 'BoardPreset';
-  id?: Maybe<Scalars['String']>;
-  name?: Maybe<BoardPresetType>;
 };
 
 export type BoardPresetType =
   | 'card'
   | 'list'
   | 'weeklyInfo';
-
-export type BoardsQueryInput = {
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
 
 export type Bookmark = {
   __typename?: 'Bookmark';
@@ -67,9 +56,10 @@ export type Church = {
 
 export type Code = {
   __typename?: 'Code';
-  createdAt: Scalars['String'];
-  id: Scalars['ID'];
-  verifyNumber: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  expiredAt?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
+  verifyNumber?: Maybe<Scalars['String']>;
 };
 
 export type Comment = {
@@ -94,6 +84,10 @@ export type Community = {
   users?: Maybe<Array<Maybe<Profile>>>;
 };
 
+export type CommunityType =
+  | 'community'
+  | 'home';
+
 export type ConfirmChurchInput = {
   id: Scalars['ID'];
 };
@@ -116,6 +110,13 @@ export type ContemplationCommentsInput = {
   id: Scalars['ID'];
 };
 
+export type CreateBoardInput = {
+  authority?: Maybe<LevelType>;
+  boardPresetType: BoardPresetType;
+  communityId?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
 export type CreateBookmarkInput = {
   chapter: Scalars['Int'];
   title: Scalars['String'];
@@ -131,6 +132,7 @@ export type CreateChurchInput = {
 };
 
 export type CreateCommunityInput = {
+  communityType?: Maybe<CommunityType>;
   name?: Maybe<Scalars['String']>;
   photo?: Maybe<Scalars['String']>;
 };
@@ -139,6 +141,19 @@ export type CreateContemplationInput = {
   content: Scalars['String'];
   range: RangeType;
   references?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type CreateHomeBoardInput = {
+  authority?: Maybe<LevelType>;
+  boardPresetType: BoardPresetType;
+  name: Scalars['String'];
+};
+
+export type CreatePostInput = {
+  boardId?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  photos?: Maybe<Array<Maybe<Scalars['String']>>>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type CreateRoomInput = {
@@ -268,6 +283,7 @@ export type Mutation = {
   createCommunity?: Maybe<Community>;
   createContemplation?: Maybe<Contemplation>;
   createGeneralRoom?: Maybe<RoomInfo>;
+  createHomeBoard?: Maybe<Board>;
   createPost?: Maybe<Post>;
   createProfile?: Maybe<Profile>;
   deleteBookmark?: Maybe<Bookmark>;
@@ -277,6 +293,7 @@ export type Mutation = {
   likeComment?: Maybe<Array<Maybe<Scalars['String']>>>;
   likeContemplation?: Maybe<Array<Maybe<Scalars['String']>>>;
   sendMessage?: Maybe<Message>;
+  updateBoardsOrder?: Maybe<Array<Maybe<Board>>>;
   updateChurch?: Maybe<Church>;
   updateCommunityInfo?: Maybe<Community>;
   updateCommunityUsers?: Maybe<Community>;
@@ -293,6 +310,11 @@ export type Mutation = {
 
 export type MutationConfirmChurchArgs = {
   input?: Maybe<ConfirmChurchInput>;
+};
+
+
+export type MutationCreateBoardArgs = {
+  input?: Maybe<CreateBoardInput>;
 };
 
 
@@ -318,6 +340,16 @@ export type MutationCreateContemplationArgs = {
 
 export type MutationCreateGeneralRoomArgs = {
   input?: Maybe<CreateRoomInput>;
+};
+
+
+export type MutationCreateHomeBoardArgs = {
+  input?: Maybe<CreateHomeBoardInput>;
+};
+
+
+export type MutationCreatePostArgs = {
+  input?: Maybe<CreatePostInput>;
 };
 
 
@@ -359,6 +391,11 @@ export type MutationLikeContemplationArgs = {
 export type MutationSendMessageArgs = {
   input?: Maybe<SendMessageInput>;
   roomId: Scalars['ID'];
+};
+
+
+export type MutationUpdateBoardsOrderArgs = {
+  input?: Maybe<UpdateBoardsOrderInput>;
 };
 
 
@@ -471,6 +508,7 @@ export type Query = {
   getBibleByVerseList?: Maybe<Array<Maybe<Bible>>>;
   getChurch?: Maybe<Church>;
   getChurchUsers?: Maybe<Array<Maybe<Profile>>>;
+  getCode?: Maybe<Code>;
   getMyBookmarkByChapter?: Maybe<Bookmark>;
   getMyBookmarks?: Maybe<Array<Maybe<Bookmark>>>;
   getMyChatRoomInfo?: Maybe<RoomInfo>;
@@ -480,6 +518,7 @@ export type Query = {
   getRecentMessage?: Maybe<Message>;
   getRoomMessages?: Maybe<PaginatedMessages>;
   getUserChurch?: Maybe<UserChurch>;
+  homeBoards?: Maybe<Array<Maybe<Board>>>;
   homeInfo?: Maybe<HomeInfo>;
   myContemplations?: Maybe<Array<Maybe<Contemplation>>>;
   post?: Maybe<Array<Maybe<Post>>>;
@@ -575,6 +614,10 @@ export type Subscription = {
 
 export type SubscriptionSentMessageArgs = {
   roomId: Scalars['ID'];
+};
+
+export type UpdateBoardsOrderInput = {
+  boards?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdateChurchInput = {

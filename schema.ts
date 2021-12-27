@@ -25,6 +25,7 @@ type Query {
   communities: [Community]
   community: Community
   boards: [Board]
+  homeBoards: [Board]
   board: Board
   posts: [Post]
   post: [Post]
@@ -101,7 +102,7 @@ type Mutation {
   createBoard(input: CreateBoardInput): Board
   createHomeBoard(input: CreateHomeBoardInput): Board
   createPost(input: CreatePostInput): Post
-  batchBoardsOrder(input: BatchBoardInput): [Board]
+  updateBoardsOrder(input: UpdateBoardsOrderInput): [Board]
   createContemplation(input: CreateContemplationInput): Contemplation
   likeContemplation(input: LikeContemplationInput): [String]
   deleteContemplation(input: DeleteContemplationInput): Contemplation
@@ -243,11 +244,6 @@ type Board {
   posts: [Post]
 }
 
-input BoardsQueryInput {
-  limit: Int!
-  cursor: String
-}
-
 input PostsQueryInput {
   limit: Int!
   cursor: String
@@ -268,8 +264,8 @@ input UpdateCommunityInfoInput {
   photo: String
 }
 
-input BatchBoardInput {
-  boards: [Board]
+input UpdateBoardsOrderInput {
+  boards: [String]
 }
 
 input CreateBoardInput {
