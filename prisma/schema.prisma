@@ -63,11 +63,11 @@ model Church {
   phoneNumber        String?              @db.VarChar(10)
   createdAt          DateTime             @default(now())
   isConfirmed        Boolean              @default(false)
-  AuthenticationCode AuthenticationCode[]
+  authenticationCode AuthenticationCode[]
   contemplations     Contemplation[]
   users              User[]
-  Community          Community[]
-  AdminLog           AdminLog[]
+  community          Community[]
+  adminLog           AdminLog[]
 }
 
 model AuthenticationCode {
@@ -83,28 +83,30 @@ model AuthenticationCode {
 }
 
 model User {
-  id              String            @id
-  name            String?           @db.VarChar(20)
-  updatedAt       DateTime          @default(now()) @updatedAt
-  createdAt       DateTime          @default(now())
-  churchId        String
-  level           LevelType?
-  pushToken       String?
-  position        String?
-  phoneNumber     String?           @db.VarChar(20)
-  birthDay        String?
-  photo           String?
-  church          Church            @relation(fields: [churchId], references: [id])
-  Bookmark        Bookmark[]
-  Comment         Comment[]
+  id          String     @id
+  name        String?    @db.VarChar(20)
+  updatedAt   DateTime   @default(now()) @updatedAt
+  createdAt   DateTime   @default(now())
+  churchId    String
+  level       LevelType?
+  pushToken   String?
+  position    String?
+  phoneNumber String?    @db.VarChar(20)
+  birthDay    String?
+  photo       String?
+  church      Church     @relation(fields: [churchId], references: [id])
+  bookmark    Bookmark[]
+
+  comment         Comment[]
   communityStatus CommunityStatus[]
   Contemplation   Contemplation[]
-  Like            Like[]
+  like            Like[]
 
-  communityId        String?
-  Community          Community?           @relation(fields: [communityId], references: [id])
-  AuthenticationCode AuthenticationCode[]
-  AdminLog           AdminLog[]
+  representCommunityId String?    @unique // 대표 게시판 설정
+  representCommunity   Community? @relation(fields: [representCommunityId], references: [id])
+
+  authenticationCodes AuthenticationCode[]
+  adminLogs           AdminLog[]
   @@index([churchId], map: "User_churchId_fkey")
 }
 
@@ -123,6 +125,7 @@ model CommunityStatus {
   id          String    @id @default(cuid())
   communityId String
   userId      String
+  admin       Boolean   @default(false)
   createdAt   DateTime  @default(now())
   community   Community @relation(fields: [communityId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
@@ -135,7 +138,7 @@ model ContemplationReference {
   id              String         @id @default(cuid())
   key             String
   contemplationId String?
-  Contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
+  contemplation   Contemplation? @relation(fields: [contemplationId], references: [id])
 
   @@index([contemplationId], map: "ContemplationReference_contemplationId_fkey")
 }
@@ -198,30 +201,40 @@ model Like {
 }
 
 model Community {
-  id              String            @id @default(cuid())
-  churchId        String
-  name            String
-  photo           String?
-  createdAt       DateTime          @default(now())
-  boards          Board[]
-  communityStatus CommunityStatus[]
-  admins          User[]
-  communityType   CommunityType
-  Church          Church            @relation(fields: [churchId], references: [id])
+  id                String             @id @default(cuid())
+  churchId          String
+  name              String
+  photo             String?
+  createdAt         DateTime           @default(now())
+  boards            Board[]
+  communityStatus   CommunityStatus[]
+  communityType     CommunityType
+  church            Church             @relation(fields: [churchId], references: [id])
+  user              User[]
+  representiveBoard RepresentiveBoard?
 }
 
 model Board {
-  id          String          @id @default(cuid())
-  order       Int
-  name        String
-  communityId String
-  createdAt   DateTime        @default(now())
-  boardPreset BoardPresetType
-  authority   LevelType
-  community   Community       @relation(fields: [communityId], references: [id])
-  posts       Post[]
+  id                String             @id @default(cuid())
+  order             Int
+  name              String
+  communityId       String
+  createdAt         DateTime           @default(now())
+  boardPreset       BoardPresetType
+  authority         LevelType
+  community         Community          @relation(fields: [communityId], references: [id])
+  posts             Post[]
+  representiveBoard RepresentiveBoard?
 
   @@index([communityId], map: "Board_communityId_fkey")
+}
+
+model RepresentiveBoard {
+  id          String    @id @default(cuid())
+  boardId     String    @unique
+  board       Board     @relation(fields: [boardId], references: [id])
+  communityId String    @unique
+  community   Community @relation(fields: [communityId], references: [id])
 }
 
 model Post {
@@ -234,7 +247,7 @@ model Post {
   comment   Comment[]
   photo     Photo[]
 
-  Like Like[]
+  like Like[]
   @@index([boardId], map: "Post_boardId_fkey")
 }
 
@@ -243,7 +256,7 @@ model Photo {
   postId    String?
   uri       String
   createdAt DateTime @default(now())
-  Post      Post?    @relation(fields: [postId], references: [id])
+  post      Post?    @relation(fields: [postId], references: [id])
 }
 
 model AdminLog {
