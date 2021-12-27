@@ -7,6 +7,9 @@ export const getProfile = async (userId: string): Promise<Profile> => {
       where: {
         id: userId,
       },
+      include: {
+        church: true,
+      },
     });
 
     return profile;
