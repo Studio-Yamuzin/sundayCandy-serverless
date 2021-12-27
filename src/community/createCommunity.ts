@@ -3,7 +3,7 @@ import { prisma } from 'handlers/graphqlHandler';
 
 export const createCommunity = async (
   userId: string,
-  { name, photo }: CreateCommunityInput,
+  { name, photo, communityType }: CreateCommunityInput,
 ): Promise<Community> => {
   try {
     const userChurch = await prisma.user.findUnique({
@@ -17,6 +17,7 @@ export const createCommunity = async (
         name,
         photo,
         churchId: userChurch.churchId,
+        communityType,
       },
     });
     return {
