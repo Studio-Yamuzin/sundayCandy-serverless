@@ -36,12 +36,20 @@ import { getContemplationComments } from '@src/contemplation/query/getContemplat
 import { updateContemplationViewer } from '@src/contemplation/mutation/updateContemplationViewer';
 import { deleteComment } from '@src/contemplation/mutation/deleteComment';
 import { updateFcmToken } from '@src/profile/updateFcmToken';
-import { PrismaClient } from '.prisma/client';
 import { getMyContemplations } from '@src/contemplation/query/getMyContemplations';
 import { confirmChurch } from '@src/contemplation/mutation/confirmChurch';
 import { getHomeInfo } from '@src/admin/getHomeInfo';
 import { getWaitingChurches } from '@src/admin/getWaitingChurches';
 import { createCommunity } from '@src/community/createCommunity';
+import { getCode } from '@src/onboarding/getCode';
+import { createBoard } from '@src/community/createBoard';
+import { updateBoardsOrder } from '@src/community/updateBoardsOrder';
+import { createHomeBoard } from '@src/community/createHomeBoard';
+import { getHomeBoards } from '@src/community/getHomeBoards';
+import { getBoards } from '@src/community/getBoards';
+import { PrismaClient } from '.prisma/client';
+import { getBoard } from '@src/community/getBoard';
+import { deleteBoard } from '@src/community/deleteBoard';
 
 export const prisma = new PrismaClient();
 
@@ -140,7 +148,7 @@ export const main: Handler = async (event, context) => {
       case 'deleteComment':
         return await deleteComment(event.userId, event.arguments.input);
       case 'updateFcmToken':
-        return await updateFcmToken(event.userId, event.argumetns.input);
+        return await updateFcmToken(event.userId, event.arguments.input);
       case 'confirmChurch':
         return await confirmChurch(event.arguments.input);
       case 'homeInfo':
@@ -148,7 +156,23 @@ export const main: Handler = async (event, context) => {
       case 'waitingChurches':
         return await getWaitingChurches(event.arguments.input);
       case 'createCommunity':
-        return await createCommunity(event.userId, event.argumetns.input);
+        return await createCommunity(event.userId, event.arguments.input);
+      case 'createBoard':
+        return await createBoard(event.userId, event.arguments.input);
+      case 'getCode':
+        return await getCode(event.userId);
+      case 'updateBoardsOrder':
+        return await updateBoardsOrder(event.userId, event.arguments.input);
+      case 'createHomeBoard':
+        return await createHomeBoard(event.userId, event.arguments.input);
+      case 'homeBoards':
+        return await getHomeBoards(event.userId);
+      case 'boards':
+        return await getBoards(event.userId);
+      case 'board':
+        return await getBoard(event.userId, event.arguments.input);
+      case 'deleteBoard':
+        return await deleteBoard(event.userId, event.arguments.input);
       default:
         throw new Error('GraphqlQL Fields are not valid');
     }
