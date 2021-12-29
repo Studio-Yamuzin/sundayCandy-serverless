@@ -24,6 +24,7 @@ export type Bible = {
 
 export type Board = {
   __typename?: 'Board';
+  authority?: Maybe<LevelType>;
   boardPreset?: Maybe<BoardPresetType>;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -171,6 +172,12 @@ export type CreateUserIput = {
   position?: Maybe<Scalars['String']>;
 };
 
+export type DeleteBoardInput = {
+  boardId?: Maybe<Scalars['String']>;
+  boardPreset?: Maybe<BoardPresetType>;
+  name?: Maybe<Scalars['String']>;
+};
+
 export type DeleteBookmarkInput = {
   id: Scalars['ID'];
 };
@@ -204,6 +211,10 @@ export type GetBibleByVerseInput = {
 
 export type GetBibleByVerseListInput = {
   keys?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type GetBoardInput = {
+  boardId?: Maybe<Scalars['String']>;
 };
 
 export type GetContemplationInput = {
@@ -286,13 +297,16 @@ export type Mutation = {
   createHomeBoard?: Maybe<Board>;
   createPost?: Maybe<Post>;
   createProfile?: Maybe<Profile>;
+  deleteBoard?: Maybe<Board>;
   deleteBookmark?: Maybe<Bookmark>;
   deleteComment?: Maybe<Scalars['Boolean']>;
   deleteContemplation?: Maybe<Contemplation>;
   exitRoom?: Maybe<Scalars['Boolean']>;
   likeComment?: Maybe<Array<Maybe<Scalars['String']>>>;
   likeContemplation?: Maybe<Array<Maybe<Scalars['String']>>>;
+  resignUser?: Maybe<Profile>;
   sendMessage?: Maybe<Message>;
+  updateBoard?: Maybe<Board>;
   updateBoardsOrder?: Maybe<Array<Maybe<Board>>>;
   updateChurch?: Maybe<Church>;
   updateCommunityInfo?: Maybe<Community>;
@@ -358,6 +372,11 @@ export type MutationCreateProfileArgs = {
 };
 
 
+export type MutationDeleteBoardArgs = {
+  input?: Maybe<DeleteBoardInput>;
+};
+
+
 export type MutationDeleteBookmarkArgs = {
   input?: Maybe<DeleteBookmarkInput>;
 };
@@ -388,9 +407,19 @@ export type MutationLikeContemplationArgs = {
 };
 
 
+export type MutationResignUserArgs = {
+  input?: Maybe<ResignUserInput>;
+};
+
+
 export type MutationSendMessageArgs = {
   input?: Maybe<SendMessageInput>;
   roomId: Scalars['ID'];
+};
+
+
+export type MutationUpdateBoardArgs = {
+  input?: Maybe<UpdateBoardInput>;
 };
 
 
@@ -527,6 +556,11 @@ export type Query = {
 };
 
 
+export type QueryBoardArgs = {
+  input?: Maybe<GetBoardInput>;
+};
+
+
 export type QueryContemplationArgs = {
   input?: Maybe<GetContemplationInput>;
 };
@@ -590,6 +624,10 @@ export type RangeType =
   | 'private'
   | 'public';
 
+export type ResignUserInput = {
+  userId?: Maybe<Scalars['String']>;
+};
+
 export type RoomInfo = {
   __typename?: 'RoomInfo';
   photo?: Maybe<Scalars['String']>;
@@ -614,6 +652,13 @@ export type Subscription = {
 
 export type SubscriptionSentMessageArgs = {
   roomId: Scalars['ID'];
+};
+
+export type UpdateBoardInput = {
+  authority?: Maybe<LevelType>;
+  boardId?: Maybe<Scalars['String']>;
+  boardPresetType?: Maybe<BoardPresetType>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UpdateBoardsOrderInput = {

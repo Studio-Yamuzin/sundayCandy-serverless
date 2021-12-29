@@ -24,6 +24,7 @@ type Board {
   id: String
   name: String
   boardPreset: BoardPresetType
+  authority: LevelType
   posts: [Post]
 }
 
@@ -71,6 +72,23 @@ input CreatePostInput {
   photos: [String]
 }
 
+input GetBoardInput {
+  boardId: String
+}
+
+input DeleteBoardInput {
+  boardId: String
+  name: String
+  boardPreset: BoardPresetType
+}
+
+input UpdateBoardInput {
+  boardId: String
+  name: String
+  boardPresetType: BoardPresetType
+  authority: LevelType
+}
+
 type Post {
   id: String
   title: String
@@ -86,7 +104,7 @@ type Query {
   community: Community
   boards: [Board]
   homeBoards: [Board]
-  board: Board
+  board(input: GetBoardInput): Board
   posts: [Post]
   post: [Post]
 }
@@ -99,4 +117,6 @@ type Mutation {
   createHomeBoard(input: CreateHomeBoardInput): Board
   createPost(input: CreatePostInput): Post
   updateBoardsOrder(input: UpdateBoardsOrderInput): [Board]
+  deleteBoard(input: DeleteBoardInput): Board
+  updateBoard(input: UpdateBoardInput): Board
 }

@@ -26,7 +26,7 @@ type Query {
   community: Community
   boards: [Board]
   homeBoards: [Board]
-  board: Board
+  board(input: GetBoardInput): Board
   posts: [Post]
   post: [Post]
   contemplations(input: GetContemplationsInput): [Contemplation]
@@ -103,6 +103,8 @@ type Mutation {
   createHomeBoard(input: CreateHomeBoardInput): Board
   createPost(input: CreatePostInput): Post
   updateBoardsOrder(input: UpdateBoardsOrderInput): [Board]
+  deleteBoard(input: DeleteBoardInput): Board
+  updateBoard(input: UpdateBoardInput): Board
   createContemplation(input: CreateContemplationInput): Contemplation
   likeContemplation(input: LikeContemplationInput): [String]
   deleteContemplation(input: DeleteContemplationInput): Contemplation
@@ -117,6 +119,7 @@ type Mutation {
   updateProfile(input: UpdateUserInfo): Profile
   verifyCode(input: VerifyCodeInput): Profile
   createCode: Code
+  resignUser(input: ResignUserInput): Profile
 }
 
 type RoomInfo {
@@ -241,6 +244,7 @@ type Board {
   id: String
   name: String
   boardPreset: BoardPresetType
+  authority: LevelType
   posts: [Post]
 }
 
@@ -286,6 +290,23 @@ input CreatePostInput {
   title: String
   content: String
   photos: [String]
+}
+
+input GetBoardInput {
+  boardId: String
+}
+
+input DeleteBoardInput {
+  boardId: String
+  name: String
+  boardPreset: BoardPresetType
+}
+
+input UpdateBoardInput {
+  boardId: String
+  name: String
+  boardPresetType: BoardPresetType
+  authority: LevelType
 }
 
 type Post {
@@ -450,6 +471,10 @@ input VerifyCodeInput {
 
 input UpdateFcmTokenInput {
   token: String
+}
+
+input ResignUserInput {
+  userId: String
 }
 
 schema {
