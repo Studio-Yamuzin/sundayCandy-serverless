@@ -229,3 +229,18 @@ Templates:
     field: boards
     request: 'community/boards-request.vtl'
     response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Query
+    field: board
+    request: 'community/board-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: deleteBoard
+    request: 'community/deleteBoard-request.vtl'
+    response: 'common/lambda-response.vtl'
+  - dataSource: Lambda
+    type: Mutation
+    field: updateBoard
+    request: 'community/updateBoard-request.vtl'
+    response: 'common/lambda-response.vtl'
